@@ -1,24 +1,26 @@
 <!-- This a Dashboard Point of sale system by rahulsya. https://tailwindcomponents.com/component/point-of-sale-system -->
-<div class="container mx-auto px-5 bg-white">
+<div class="flex items-center justify-center min-h-screen" *ngIf="!config">
+  <div style="border-top-color:transparent" class="w-8 h-8 border-4 border-blue-200 rounded-full animate-spin"></div>
+  <p class="ml-2">Loading POSitif...</p>
+</div>
+<div class="container mx-auto px-5 bg-white" *ngIf="config">
   <div class="flex lg:flex-row flex-col-reverse shadow-lg">
     <!-- left section -->
     <div class="w-full lg:w-3/5 min-h-screen shadow-lg">
       <!-- header -->
       <div class="flex flex-row justify-between items-center px-5 mt-5">
         <div class="text-gray-800">
-          <div class="font-bold text-xl">Simons's BQQ Team</div>
-          <span class="text-xs">Location ID#SIMON123</span>
+          <div class="font-bold text-xl">{{ config.title }}</div>
+          <span class="text-xs">{{ config.terminal }}</span>
         </div>
         <div class="flex items-center">
           <div class="text-sm text-center mr-4">
             <div class="font-light text-gray-500">last synced</div>
-            <span class="font-semibold">3 mins ago</span>
+            <span class="font-semibold">999 mins ago</span>
           </div>
           <div>
-              <span
-              class="px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded"
-              >
-              Help
+            <span class="px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded cursor-pointer" (click)="sync_now()">
+              Sync now
             </span>
           </div>
         </div>
@@ -26,132 +28,25 @@
       <!-- end header -->
       <!-- categories -->
       <div class="mt-5 flex flex-row px-5">
-        <span
-          class="px-5 py-1 bg-yellow-500 rounded-2xl text-white text-sm mr-4"
-        >
-          All items
-        </span>
-        <span class="px-5 py-1 rounded-2xl text-sm font-semibold mr-4">
-          Food
-        </span>
-        <span class="px-5 py-1 rounded-2xl text-sm font-semibold mr-4">
-          Cold Drinks
-        </span>
-        <span class="px-5 py-1 rounded-2xl text-sm font-semibold mr-4">
-          Hot Drinks
-        </span>
+        <div *ngFor="let category of categories_list">
+          <span class="px-5 py-1 rounded-2xl text-sm font-semibold mr-4"
+                  [ngClass]="{'bg-yellow-500 text-white': category == active_category, 'cursor-pointer': category != active_category}"
+                  (click)="select_category(category)">
+            {{ category.name }}
+          </span>
+        </div>
       </div>
       <!-- end categories -->
       <!-- products -->
-      <div class="grid grid-cols-3 gap-4 px-5 mt-5 overflow-y-auto h-3/4">
-        <div class="px-3 py-3 flex flex-col border border-gray-200 rounded-md h-32 justify-between">
-          <div>
-            <div class="font-bold text-gray-800">Griled corn</div>
-            <span class="font-light text-sm text-gray-400">150g</span>
-          </div>
-          <div class="flex flex-row justify-between items-center">
-            <span class="self-end font-bold text-lg text-yellow-500">$1.75</span>
-            <img src="https://source.unsplash.com/sc5sTPMrVfk/600x600" class=" h-14 w-14 object-cover rounded-md" alt="">
-          </div>
-        </div>
-        <div class="px-3 py-3 flex flex-col border border-gray-200 rounded-md h-32 justify-between">
-          <div>
-            <div class="font-bold text-gray-800">Ranch Burger</div>
-            <span class="font-light text-sm text-gray-400">150g</span>
-          </div>
-          <div class="flex flex-row justify-between items-center">
-            <span class="self-end font-bold text-lg text-yellow-500">$7.00</span>
-            <img src="https://source.unsplash.com/sc5sTPMrVfk/600x500" class=" h-14 w-14 object-cover rounded-md" alt="">
-          </div>
-        </div>
-        <div class="px-3 py-3 flex flex-col border border-gray-200 rounded-md h-32 justify-between">
-          <div>
-            <div class="font-bold text-gray-800">Pizza Bacon</div>
-            <span class="font-light text-sm text-gray-400">150g</span>
-          </div>
-          <div class="flex flex-row justify-between items-center">
-            <span class="self-end font-bold text-lg text-yellow-500">$1.75</span>
-            <img src="https://source.unsplash.com/sc5sTPMrVfk/500x500" class=" h-14 w-14 object-cover rounded-md" alt="">
-          </div>
-        </div>
-        <div class="px-3 py-3 flex flex-col border border-gray-200 rounded-md h-32 justify-between">
-          <div>
-            <div class="font-bold text-gray-800">Griled corn</div>
-            <span class="font-light text-sm text-gray-400">150g</span>
-          </div>
-          <div class="flex flex-row justify-between items-center">
-            <span class="self-end font-bold text-lg text-yellow-500">$1.75</span>
-            <img src="https://source.unsplash.com/MNtag_eXMKw/600x600" class=" h-14 w-14 object-cover rounded-md" alt="">
-          </div>
-        </div>
-        <div class="px-3 py-3 flex flex-col border border-gray-200 rounded-md h-32 justify-between">
-          <div>
-            <div class="font-bold text-gray-800">Griled corn</div>
-            <span class="font-light text-sm text-gray-400">150g</span>
-          </div>
-          <div class="flex flex-row justify-between items-center">
-            <span class="self-end font-bold text-lg text-yellow-500">$1.75</span>
-            <img src="https://source.unsplash.com/MNtag_eXMKw/600x600" class=" h-14 w-14 object-cover rounded-md" alt="">
-          </div>
-        </div>
-        <div class="px-3 py-3 flex flex-col border border-gray-200 rounded-md h-32 justify-between">
-          <div>
-            <div class="font-bold text-gray-800">Griled corn</div>
-            <span class="font-light text-sm text-gray-400">150g</span>
-          </div>
-          <div class="flex flex-row justify-between items-center">
-            <span class="self-end font-bold text-lg text-yellow-500">$1.75</span>
-            <img src="https://source.unsplash.com/MNtag_eXMKw/600x600" class=" h-14 w-14 object-cover rounded-md" alt="">
-          </div>
-        </div>
-        <div class="px-3 py-3 flex flex-col border border-gray-200 rounded-md h-32 justify-between">
-          <div>
-            <div class="font-bold text-gray-800">Griled corn</div>
-            <span class="font-light text-sm text-gray-400">150g</span>
-          </div>
-          <div class="flex flex-row justify-between items-center">
-            <span class="self-end font-bold text-lg text-yellow-500">$1.75</span>
-            <img src="https://source.unsplash.com/MNtag_eXMKw/600x600" class=" h-14 w-14 object-cover rounded-md" alt="">
-          </div>
-        </div>
-        <div class="px-3 py-3 flex flex-col border border-gray-200 rounded-md h-32 justify-between">
-          <div>
-            <div class="font-bold text-gray-800">Griled corn</div>
-            <span class="font-light text-sm text-gray-400">150g</span>
-          </div>
-          <div class="flex flex-row justify-between items-center">
-            <span class="self-end font-bold text-lg text-yellow-500">$1.75</span>
-            <img src="https://source.unsplash.com/MNtag_eXMKw/600x600" class=" h-14 w-14 object-cover rounded-md" alt="">
-          </div>
-        </div>
-        <div class="px-3 py-3 flex flex-col border border-gray-200 rounded-md h-32 justify-between">
-          <div>
-            <div class="font-bold text-gray-800">Griled corn</div>
-            <span class="font-light text-sm text-gray-400">150g</span>
-          </div>
-          <div class="flex flex-row justify-between items-center">
-            <span class="self-end font-bold text-lg text-yellow-500">$1.75</span>
-            <img src="https://source.unsplash.com/MNtag_eXMKw/600x600" class=" h-14 w-14 object-cover rounded-md" alt="">
-          </div>
-        </div>
-        <div class="px-3 py-3 flex flex-col border border-gray-200 rounded-md h-32 justify-between">
-          <div>
-            <div class="font-bold text-gray-800">Griled corn</div>
-            <span class="font-light text-sm text-gray-400">150g</span>
-          </div>
-          <div class="flex flex-row justify-between items-center">
-            <span class="self-end font-bold text-lg text-yellow-500">$1.75</span>
-            <img src="https://source.unsplash.com/MNtag_eXMKw/600x600" class=" h-14 w-14 object-cover rounded-md" alt="">
-          </div>
-        </div>
-        <div class="px-3 py-3 flex flex-col border border-gray-200 rounded-md h-32 justify-between">
-          <div>
-            <div class="font-bold text-gray-800">Griled corn</div>
-            <span class="font-light text-sm text-gray-400">150g</span>
-          </div>
-          <div class="flex flex-row justify-between items-center">
-            <span class="self-end font-bold text-lg text-yellow-500">$1.75</span>
-            <img src="https://source.unsplash.com/MNtag_eXMKw/600x600" class=" h-14 w-14 object-cover rounded-md" alt="">
+      <div class="grid grid-cols-3 gap-4 px-5 mt-5 overflow-y-auto h-3/4 content-start">
+        <div *ngFor="let product of products_list" class="cursor-pointer" (click)="add_cart(product)">
+          <div class="px-3 py-3 flex flex-col border border-gray-200 rounded-md h-32 justify-between">
+            <div class="font-bold text-gray-800">{{ product.name }}</div>
+            <span class="font-light text-sm text-gray-400">{{ product.desc }}</span>
+            <div class="flex flex-row justify-between items-center">
+              <span class="self-end font-bold text-lg text-yellow-500">{{ product.price }} €</span>
+              <img src="{{ product.photo }}" class=" h-14 w-14 object-cover rounded-md" alt="">
+            </div>
           </div>
         </div>
       </div>
@@ -164,117 +59,37 @@
       <div class="flex flex-row items-center justify-between px-5 mt-5">
         <div class="font-bold text-xl">Current Order</div>
         <div class="font-semibold space-x-1">
-          <span class="px-4 py-2 rounded-md bg-red-100 text-red-500">Clear All</span>
-          <span class="px-4 py-2 rounded-md bg-gray-100 text-gray-800">Setting</span>
+          <span class="px-4 py-2 rounded-md bg-red-100 text-red-500 cursor-pointer" (click)="clear_cart()">Clear All</span>
+          <span class="px-4 py-2 rounded-md bg-gray-100 text-gray-800 cursor-pointer" (click)="lock_pos()">Lock POS</span>
         </div>
       </div>
       <!-- end header -->
       <!-- order list -->
       <div class="px-5 py-4 mt-5 overflow-y-auto h-64">
+        <div *ngFor="let line of order.lines">
           <div class="flex flex-row justify-between items-center mb-4">
             <div class="flex flex-row items-center w-2/5">
-              <img src="https://source.unsplash.com/4u_nRgiLW3M/600x600" class="w-10 h-10 object-cover rounded-md" alt="">
-              <span class="ml-4 font-semibold text-sm">Stuffed flank steak</span>
+              <img src="{{ line.product.photo }}" class="w-10 h-10 object-cover rounded-md" alt="">
+              <span class="ml-4 font-semibold text-sm">{{ line.product.name }}</span>
             </div>
             <div class="w-32 flex justify-between">
-              <span class="px-3 py-1 rounded-md bg-gray-300 ">-</span>
-              <span class="font-semibold mx-4">2</span>
-              <span class="px-3 py-1 rounded-md bg-gray-300 ">+</span>
+              <span class="px-3 py-1 rounded-md bg-gray-300 cursor-pointer" [ngClass]="{'bg-red-300': line.qty == 1}" (click)="sub_cart(line.product)">-</span>
+              <span class="font-semibold mx-4">{{ line.qty }}</span>
+              <span class="px-3 py-1 rounded-md bg-gray-300 cursor-pointer" (click)="add_cart(line.product)">+</span>
             </div>
             <div class="font-semibold text-lg w-16 text-center">
-              $13.50
-            </div>
-          </div>             
-          <div class="flex flex-row justify-between items-center mb-4">
-            <div class="flex flex-row items-center w-2/5">
-              <img src="https://source.unsplash.com/sc5sTPMrVfk/600x600" class="w-10 h-10 object-cover rounded-md" alt="">
-              <span class="ml-4 font-semibold text-sm">Grilled Corn</span>
-            </div>
-            <div class="w-32 flex justify-between">
-              <span class="px-3 py-1 rounded-md bg-gray-300 ">-</span>
-              <span class="font-semibold mx-4">10</span>
-              <span class="px-3 py-1 rounded-md bg-gray-300 ">+</span>
-            </div>
-            <div class="font-semibold text-lg w-16 text-center">
-              $3.50
+              {{ line.product.price * line.qty }} €
             </div>
           </div>
-          <div class="flex flex-row justify-between items-center mb-4">
-            <div class="flex flex-row items-center w-2/5">
-              <img src="https://source.unsplash.com/MNtag_eXMKw/600x600" class="w-10 h-10 object-cover rounded-md" alt="">
-              <span class="ml-4 font-semibold text-sm">Grilled Corn</span>
-            </div>
-            <div class="w-32 flex justify-between">
-              <span class="px-3 py-1 rounded-md bg-gray-300 ">-</span>
-              <span class="font-semibold mx-4">10</span>
-              <span class="px-3 py-1 rounded-md bg-gray-300 ">+</span>
-            </div>
-            <div class="font-semibold text-lg w-16 text-center">
-              $3.50
-            </div>
-          </div>
-          <div class="flex flex-row justify-between items-center mb-4">
-            <div class="flex flex-row items-center w-2/5">
-              <img src="https://source.unsplash.com/MNtag_eXMKw/600x600" class="w-10 h-10 object-cover rounded-md" alt="">
-              <span class="ml-4 font-semibold text-sm">Grilled Corn</span>
-            </div>
-            <div class="w-32 flex justify-between">
-              <span class="px-3 py-1 rounded-md bg-gray-300 ">-</span>
-              <span class="font-semibold mx-4">10</span>
-              <span class="px-3 py-1 rounded-md bg-gray-300 ">+</span>
-            </div>
-            <div class="font-semibold text-lg w-16 text-center">
-              $3.50
-            </div>
-          </div> 
-          <div class="flex flex-row justify-between items-center mb-4">
-            <div class="flex flex-row items-center w-2/5">
-              <img src="https://source.unsplash.com/MNtag_eXMKw/600x600" class="w-10 h-10 object-cover rounded-md" alt="">
-              <span class="ml-4 font-semibold text-sm">Ranch Burger</span>
-            </div>
-            <div class="w-32 flex justify-between">
-              <span class="px-3 py-1 rounded-md bg-red-300 text-white">x</span>
-              <span class="font-semibold mx-4">1</span>
-              <span class="px-3 py-1 rounded-md bg-gray-300 ">+</span>
-            </div>
-            <div class="font-semibold text-lg w-16 text-center">
-              $2.50
-            </div>
-          </div> 
-          <div class="flex flex-row justify-between items-center mb-4">
-            <div class="flex flex-row items-center w-2/5">
-              <img src="https://source.unsplash.com/4u_nRgiLW3M/600x600" class="w-10 h-10 object-cover rounded-md" alt="">
-              <span class="ml-4 font-semibold text-sm">Ranch Burger</span>
-            </div>
-            <div class="w-32 flex justify-between">
-              <span class="px-3 py-1 rounded-md bg-red-300 text-white">x</span>
-              <span class="font-semibold mx-4">1</span>
-              <span class="px-3 py-1 rounded-md bg-gray-300 ">+</span>
-            </div>
-            <div class="font-semibold text-lg w-16 text-center">
-              $2.50
-            </div>
-          </div>            
+        </div>      
       </div>
       <!-- end order list -->
       <!-- totalItems -->
       <div class="px-5 mt-5">
         <div class="py-4 rounded-md shadow-lg">
-          <div class=" px-4 flex justify-between ">
-            <span class="font-semibold text-sm">Subtotal</span>
-            <span class="font-bold">$35.25</span>
-          </div>
-          <div class=" px-4 flex justify-between ">
-            <span class="font-semibold text-sm">Discount</span>
-            <span class="font-bold">- $5.00</span>
-          </div>
-          <div class=" px-4 flex justify-between ">
-            <span class="font-semibold text-sm">Sales Tax</span>
-            <span class="font-bold">$2.25</span>
-          </div>
           <div class="border-t-2 mt-3 py-2 px-4 flex items-center justify-between">
             <span class="font-semibold text-2xl">Total</span>
-            <span class="font-bold text-2xl">$37.50</span>
+            <span class="font-bold text-2xl">{{ order.total }} €</span>
           </div>
         </div>
       </div>
