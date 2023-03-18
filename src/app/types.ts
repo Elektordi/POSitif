@@ -24,3 +24,10 @@ export interface Order {
   }[];
   total: number;
 }
+
+export enum SyncStatus {
+  OK = 0,
+  WARNING = 1,
+  ERROR = 2,
+  DOWN = 3
+}

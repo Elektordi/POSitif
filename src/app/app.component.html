@@ -1,9 +1,16 @@
 <!-- This a Dashboard Point of sale system by rahulsya. https://tailwindcomponents.com/component/point-of-sale-system -->
+
 <div class="flex items-center justify-center min-h-screen" *ngIf="!config">
   <div style="border-top-color:transparent" class="w-8 h-8 border-4 border-blue-200 rounded-full animate-spin"></div>
   <p class="ml-2">Loading POSitif...</p>
+</div>  
+
+<div class="flex flex-col items-center justify-center min-h-screen" *ngIf="config && !unlocked">
+    <p class="ml-2">POSitif locked!</p>
+    <span class="px-4 py-2 rounded-md bg-gray-100 text-gray-800 cursor-pointer" (click)="unlock_pos()">Unlock POS</span>
 </div>
-<div class="container mx-auto px-5 bg-white" *ngIf="config">
+
+<div class="container mx-auto px-5 bg-white" *ngIf="config && unlocked">
   <div class="flex lg:flex-row flex-col-reverse shadow-lg">
     <!-- left section -->
     <div class="w-full lg:w-3/5 min-h-screen shadow-lg">
@@ -13,24 +20,23 @@
           <div class="font-bold text-xl">{{ config.title }}</div>
           <span class="text-xs">{{ config.terminal }}</span>
         </div>
-        <div class="flex items-center">
-          <div class="text-sm text-center mr-4">
-            <div class="font-light text-gray-500">last synced</div>
-            <span class="font-semibold">999 mins ago</span>
-          </div>
-          <div>
-            <span class="px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded cursor-pointer" (click)="sync_now()">
-              Sync now
-            </span>
-          </div>
+        <div class="flex self-start items-center text-sm">
+            <div class="font-light text-gray-500">Sync: </div>
+            <div  style="border-top-color:transparent"
+                  class="ml-2 shadow-sm w-4 h-4 rounded-full cursor-pointer"
+                  [ngClass]="{'bg-green-500': sync == SyncStatus.OK,
+                              'bg-orange-500': sync == SyncStatus.WARNING,
+                              'bg-red-500': sync == SyncStatus.ERROR,
+                              'bg-yellow-500': sync == SyncStatus.DOWN}"
+                  (click)="sync_now()"></div>
         </div>
       </div>
       <!-- end header -->
       <!-- categories -->
-      <div class="mt-5 flex flex-row px-5">
+      <div class="mt-5 flex flex-row px-5" *ngIf="categories_list && categories_list.length > 1">
         <div *ngFor="let category of categories_list">
-          <span class="px-5 py-1 rounded-2xl text-sm font-semibold mr-4"
-                  [ngClass]="{'bg-yellow-500 text-white': category == active_category, 'cursor-pointer': category != active_category}"
+          <span   class="px-5 py-1 rounded-2xl text-sm font-semibold mr-4"
+                  [ngClass]="{'bg-cyan-500 text-white': category == active_category, 'cursor-pointer': category != active_category}"
                   (click)="select_category(category)">
             {{ category.name }}
           </span>
@@ -40,13 +46,13 @@
       <!-- products -->
       <div class="grid grid-cols-3 gap-4 px-5 mt-5 overflow-y-auto h-3/4 content-start">
         <div *ngFor="let product of products_list" class="cursor-pointer" (click)="add_cart(product)">
-          <div class="px-3 py-3 flex flex-col border border-gray-200 rounded-md h-32 justify-between">
-            <div class="font-bold text-gray-800">{{ product.name }}</div>
-            <span class="font-light text-sm text-gray-400">{{ product.desc }}</span>
-            <div class="flex flex-row justify-between items-center">
-              <span class="self-end font-bold text-lg text-yellow-500">{{ product.price }} €</span>
-              <img src="{{ product.photo }}" class=" h-14 w-14 object-cover rounded-md" alt="">
+          <div class="px-3 py-3 flex flex-row border border-gray-200 rounded-md h-32 justify-between">
+            <div class="flex flex-col justify-between">
+              <div class="font-bold text-gray-800">{{ product.name }}</div>
+              <div class="font-light text-sm text-gray-400 grow whitespace-pre-wrap">{{ product.desc }}</div>
+              <div class="font-bold text-lg text-gray-800">{{ product.price }} €</div>
             </div>
+            <img src="{{ product.photo }}" class="self-end h-full object-cover rounded-md" alt="">
           </div>
         </div>
       </div>
@@ -94,27 +100,31 @@
         </div>
       </div>
       <!-- end total -->
-      <!-- cash -->
-      <div class="px-5 mt-5">
-        <div class="rounded-md shadow-lg px-4 py-4">
-          <div class="flex flex-row justify-between items-center">
-            <div class="flex flex-col">
-              <span class="uppercase text-xs font-semibold">cashless credit</span>
-              <span class="text-xl font-bold text-yellow-500">$32.50</span>
-              <span class=" text-xs text-gray-400 ">Available</span>
-            </div>
-            <div class="px-4 py-3 bg-gray-300 text-gray-800 rounded-md font-bold"> Cancel</div>
+
+      <!-- buttons -->
+      <div class="mt-20">
+        <div class="px-5 mt-5">
+          <div class="px-4 py-4 rounded-md shadow-lg text-center bg-green-500 text-white font-semibold cursor-pointer" (click)="pay('cash');">
+            Pay with Cash
+          </div>
+        </div>
+        <div class="px-5 mt-5">
+          <div class="px-4 py-4 rounded-md shadow-lg text-center bg-green-500 text-white font-semibold cursor-pointer" (click)="pay('card');">
+            Pay with Card
+          </div>
+        </div>
+        <div class="px-5 mt-5">
+          <div class="px-4 py-4 rounded-md shadow-lg text-center bg-green-500 text-white font-semibold cursor-pointer" (click)="pay('check');">
+            Pay with Check
+          </div>
+        </div>
+        <div class="px-5 mt-5">
+          <div class="px-4 py-4 rounded-md shadow-lg text-center bg-yellow-500 text-white font-semibold cursor-pointer" (click)="pay('free');">
+            Free order
           </div>
         </div>
       </div>
-      <!-- end cash -->
-      <!-- button pay-->
-      <div class="px-5 mt-5">
-        <div class="px-4 py-4 rounded-md shadow-lg text-center bg-yellow-500 text-white font-semibold">
-          Pay With Cashless Credit
-        </div>
-      </div>
-      <!-- end button pay -->
+      <!-- end buttons -->
     </div>
     <!-- end right section -->
   </div>

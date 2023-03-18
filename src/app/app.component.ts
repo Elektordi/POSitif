@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { BackendService } from './backend.service';
-import { Category, Product, Config, Order } from './types';
+import { Category, Product, Config, Order, SyncStatus } from './types';
 
 @Component({
   selector: 'app-root',
@@ -8,14 +8,20 @@ import { Category, Product, Config, Order } from './types';
   styleUrls: ['./app.component.less']
 })
 export class AppComponent {
+  unlocked: boolean;
+  sync: SyncStatus;
   config? : Config;
   categories_list? : Category[];
   active_category? : Category;
   products_list? : Product[];
   order : Order;
 
+  SyncStatus: typeof SyncStatus = SyncStatus; // For enum access
+
   constructor(private backend: BackendService) {
     this.order = {lines: [], total: 0};
+    this.unlocked = true; // TODO
+    this.sync = SyncStatus.OK; // TODO
   }
 
   ngAfterViewInit() {
@@ -25,7 +31,7 @@ export class AppComponent {
   }
 
   sync_now() {
-    alert("Sync!");
+    alert("Sync! (TODO)");
   }
 
   select_category(category: Category) {
@@ -61,6 +67,14 @@ export class AppComponent {
   }
 
   lock_pos() {
-    // TODO
+    this.unlocked = false;
+  }
+
+  unlock_pos() {
+    this.unlocked = true;
+  }
+
+  pay(method: string) {
+    alert("Pay! (TODO)");
   }
 }

@@ -12,19 +12,27 @@ export class BackendService {
 
   list_categories(): Category[] {
     return [
-      {id: 1, name: "Cold Drinks"},
-      {id: 2, name: "Hot Drinks"},
-      {id: 3, name: "Cold Food"},
-      {id: 4, name: "Hot Food"},
+      {id: 1, name: "Misc."},
+      {id: 2, name: "Cold Drinks"},
+      {id: 3, name: "Hot Drinks"},
     ];
   }
 
   list_products(cat: Category): Product[] {
-    return [
-      {id: 1,  category: cat, name: "Griled corn", desc: "Yellow", price: 5, photo: "https://source.unsplash.com/4u_nRgiLW3M/600x600"},
-      {id: 2,  category: cat, name: "Ranch Burger", desc: "With garlic", price: 10, photo: "https://source.unsplash.com/sc5sTPMrVfk/600x600"},
-      {id: 3,  category: cat, name: "Pizza Bacon", desc: "Why not?", price: 15, photo: "https://source.unsplash.com/MNtag_eXMKw/600x600"},
-      {id: 4,  category: cat, name: "Stuffed flank steak", desc: "Without fish", price: 12.5, photo: "https://source.unsplash.com/vzX2rgUbQXM/600x600"},
+    if(cat.id == 1) return [
+      {id: 1, category: cat, name: "Cup", desc: "Returnable", price: 1, photo: "/assets/products/cup.jpg"},
+      {id: 2, category: cat, name: "Cup (return)", desc: "Max 3 per person.", price: -1, photo: "/assets/products/cup-return.jpg"},
     ];
+    if(cat.id == 2) return [
+      {id: 1, category: cat, name: "Cup", desc: "Returnable", price: 1, photo: "/assets/products/cup.jpg"},
+      {id: 20, category: cat, name: "Blond Beer", desc: "Belgian beer, 8%", price: 3, photo: "/assets/products/beer.jpg"},
+      {id: 21, category: cat, name: "White Beer", desc: "Belgian beer, 7%", price: 3, photo: "/assets/products/beerwhite.jpg"},
+    ];
+    if(cat.id == 3) return [
+      {id: 1, category: cat, name: "Cup", desc: "Returnable", price: 1, photo: "/assets/products/cup.jpg"},
+      {id: 30, category: cat, name: "Coffee", desc: "15cl", price: 0.5, photo: "/assets/products/coffee.jpg"},
+      {id: 31, category: cat, name: "Tea", desc: "30cl\nBlack or Green tea", price: 0.5, photo: "/assets/products/tea.jpg"},
+    ];
+    return [];
   }
 }
