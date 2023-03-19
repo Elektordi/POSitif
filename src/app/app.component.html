@@ -129,3 +129,29 @@
     <!-- end right section -->
   </div>
 </div>
+
+<div class="relative z-10" *ngIf="modal">
+  <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+  <div class="fixed inset-0 z-10 overflow-y-auto">
+    <div class="flex min-h-full items-end justify-center text-center items-center p-0">
+      <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all my-8 w-full max-w-lg">
+        <div class="bg-white p-6 pb-4">
+          <div class="mt-0 text-left">
+            <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Pay with {{ modal! }}</h3>
+            <div class="mt-2">
+              <p class="text-sm text-gray-500">Confirm payment?</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gray-50 px-6 py-3 flex flex-row-reverse">
+          <span class="inline-flex w-auto justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 ml-3 cursor-pointer" (click)="pay_confirm(modal!);">Confirm</span>
+          <span class="mt-0 inline-flex w-auto justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 cursor-pointer" (click)="modal=undefined;">Cancel</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="relative z-10" *ngIf="flash_color">
+  <div class="fixed inset-0 bg-opacity-50 transition-opacity" [ngClass]="{'bg-green-500': flash_color=='green', 'bg-red-500': flash_color=='red'}"></div>
+</div>
