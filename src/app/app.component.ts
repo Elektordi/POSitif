@@ -9,7 +9,7 @@ import { Category, Product, Config, Order, SyncStatus } from './types';
   styleUrls: ['./app.component.less']
 })
 export class AppComponent {
-  unlocked: boolean;
+  refund: boolean;
   sync: SyncStatus;
   modal?: string;
   flash_color?: string;
@@ -23,7 +23,7 @@ export class AppComponent {
 
   constructor(private backend: BackendService, private sound: SoundService) {
     this.order = {lines: [], total: 0};
-    this.unlocked = true; // TODO
+    this.refund = false;
     this.sync = SyncStatus.OK; // TODO
   }
 
@@ -70,12 +70,9 @@ export class AppComponent {
     this.order = {lines: [], total: 0};
   }
 
-  lock_pos() {
-    this.unlocked = false;
-  }
-
-  unlock_pos() {
-    this.unlocked = true;
+  toggle_refund() {
+    this.refund = !this.refund;
+    this.clear_cart();
   }
 
   pay(method: string) {
@@ -92,6 +89,7 @@ export class AppComponent {
     this.modal = undefined;
     this.sound.bip_success();
     this.flash('green');
+    this.refund = false;
   }
 
   flash(color: string) {

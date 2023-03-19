@@ -5,12 +5,7 @@
   <p class="ml-2">Loading POSitif...</p>
 </div>  
 
-<div class="flex flex-col items-center justify-center min-h-screen" *ngIf="config && !unlocked">
-    <p class="ml-2">POSitif locked!</p>
-    <span class="px-4 py-2 rounded-md bg-gray-100 text-gray-800 cursor-pointer" (click)="unlock_pos()">Unlock POS</span>
-</div>
-
-<div class="container mx-auto px-5 bg-white" *ngIf="config && unlocked">
+<div class="container mx-auto px-5 bg-white" *ngIf="config" [ngClass]="{'bg-purple-200': refund}">
   <div class="flex lg:flex-row flex-col-reverse shadow-lg">
     <!-- left section -->
     <div class="w-full lg:w-3/5 min-h-screen shadow-lg">
@@ -63,10 +58,11 @@
     <div class="w-full lg:w-2/5">
       <!-- header -->
       <div class="flex flex-row items-center justify-between px-5 mt-5">
-        <div class="font-bold text-xl">Current Order</div>
+        <div class="font-bold text-xl" *ngIf="!refund">Current order</div>
+        <div class="font-bold text-xl" *ngIf="refund">Refund order</div>
         <div class="font-semibold space-x-1">
-          <span class="px-4 py-2 rounded-md bg-red-100 text-red-500 cursor-pointer" (click)="clear_cart()">Clear All</span>
-          <span class="px-4 py-2 rounded-md bg-gray-100 text-gray-800 cursor-pointer" (click)="lock_pos()">Lock POS</span>
+          <span class="px-4 py-2 rounded-md bg-red-100 text-red-500 cursor-pointer" (click)="clear_cart()">Clear all</span>
+          <span class="px-4 py-2 rounded-md bg-purple-100 text-purple-800 cursor-pointer" (click)="toggle_refund()">Refund mode</span>
         </div>
       </div>
       <!-- end header -->
@@ -84,7 +80,7 @@
               <span class="px-3 py-1 rounded-md bg-gray-300 cursor-pointer" (click)="add_cart(line.product)">+</span>
             </div>
             <div class="font-semibold text-lg w-16 text-center">
-              {{ line.product.price * line.qty }} €
+              {{ line.product.price * line.qty * (refund ? -1 : 1) }} €
             </div>
           </div>
         </div>      
@@ -95,14 +91,14 @@
         <div class="py-4 rounded-md shadow-lg">
           <div class="border-t-2 mt-3 py-2 px-4 flex items-center justify-between">
             <span class="font-semibold text-2xl">Total</span>
-            <span class="font-bold text-2xl">{{ order.total }} €</span>
+            <span class="font-bold text-2xl">{{ order.total * (refund ? -1 : 1) }} €</span>
           </div>
         </div>
       </div>
       <!-- end total -->
 
       <!-- buttons -->
-      <div class="mt-20">
+      <div class="mt-20" *ngIf="!refund">
         <div class="px-5 mt-5">
           <div class="px-4 py-4 rounded-md shadow-lg text-center bg-green-500 text-white font-semibold cursor-pointer" (click)="pay('cash');">
             Pay with Cash
@@ -121,6 +117,23 @@
         <div class="px-5 mt-5">
           <div class="px-4 py-4 rounded-md shadow-lg text-center bg-yellow-500 text-white font-semibold cursor-pointer" (click)="pay('free');">
             Free order
+          </div>
+        </div>
+      </div>
+      <div class="mt-20" *ngIf="refund">
+        <div class="px-5 mt-5">
+          <div class="px-4 py-4 rounded-md shadow-lg text-center bg-purple-500 text-white font-semibold cursor-pointer" (click)="pay('cash');">
+            Refund with Cash
+          </div>
+        </div>
+        <div class="px-5 mt-5">
+          <div class="px-4 py-4 rounded-md shadow-lg text-center bg-purple-500 text-white font-semibold cursor-pointer" (click)="pay('manual');">
+            Manual refund (card, check)
+          </div>
+        </div>
+        <div class="px-5 mt-5">
+          <div class="px-4 py-4 rounded-md shadow-lg text-center bg-purple-500 text-white font-semibold cursor-pointer" (click)="pay('free');">
+            Cancel free order
           </div>
         </div>
       </div>
