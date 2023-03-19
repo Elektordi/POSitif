@@ -9,8 +9,6 @@ import { Category, Product, Config, Order, SyncStatus } from './types';
   styleUrls: ['./app.component.less']
 })
 export class AppComponent {
-  refund: boolean;
-  sync: SyncStatus;
   modal?: string;
   flash_color?: string;
   config? : Config;
@@ -21,10 +19,8 @@ export class AppComponent {
 
   SyncStatus: typeof SyncStatus = SyncStatus; // For enum access
 
-  constructor(private backend: BackendService, private sound: SoundService) {
-    this.order = {lines: [], total: 0};
-    this.refund = false;
-    this.sync = SyncStatus.OK; // TODO
+  constructor(public backend: BackendService, public sound: SoundService) {
+    this.order = {lines: [], total: 0, refund: false};
   }
 
   async ngAfterViewInit() {
@@ -32,10 +28,6 @@ export class AppComponent {
     this.config = this.backend.fetch_config();
     this.categories_list = this.backend.list_categories();
     if (this.categories_list) this.select_category(this.categories_list[0]);
-  }
-
-  sync_now() {
-    alert("Sync! (TODO)");
   }
 
   select_category(category: Category) {
@@ -67,12 +59,12 @@ export class AppComponent {
   }
 
   clear_cart() {
-    this.order = {lines: [], total: 0};
+    this.order = {lines: [], total: 0, refund: this.order.refund};
   }
 
   toggle_refund() {
-    this.refund = !this.refund;
     this.clear_cart();
+    this.order.refund = !this.order.refund;
   }
 
   pay(method: string) {
@@ -82,14 +74,20 @@ export class AppComponent {
       return;
     }
     this.modal = method;
+    this.order.payment_method = method;
   }
 
   pay_confirm(method: string) {
+    this.order.payment_infos = "TODO";
+    this.order.payment_timestamp = Date.now();
+    this.order.uid = `${this.config?.store_id}_${this.config?.terminal_id}_${this.order.payment_timestamp}`
+    this.backend.push_order(this.order);
+    
     this.clear_cart();
+    this.order.refund = false;
     this.modal = undefined;
     this.sound.bip_success();
     this.flash('green');
-    this.refund = false;
   }
 
   flash(color: string) {

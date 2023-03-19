@@ -5,7 +5,7 @@
   <p class="ml-2">Loading POSitif...</p>
 </div>  
 
-<div class="container mx-auto px-5 bg-white" *ngIf="config" [ngClass]="{'bg-purple-200': refund}">
+<div class="container mx-auto px-5 bg-white" *ngIf="config" [ngClass]="{'bg-purple-200': order.refund}">
   <div class="flex lg:flex-row flex-col-reverse shadow-lg">
     <!-- left section -->
     <div class="w-full lg:w-3/5 min-h-screen shadow-lg">
@@ -13,17 +13,18 @@
       <div class="flex flex-row justify-between items-center px-5 mt-5">
         <div class="text-gray-800">
           <div class="font-bold text-xl">{{ config.title }}</div>
-          <span class="text-xs">{{ config.terminal }}</span>
+          <span class="text-xs">Store #{{ config.store_id }} / Terminal #{{ config.terminal_id }}</span>
         </div>
         <div class="flex self-start items-center text-sm">
             <div class="font-light text-gray-500">Sync: </div>
-            <div  style="border-top-color:transparent"
-                  class="ml-2 shadow-sm w-4 h-4 rounded-full cursor-pointer"
-                  [ngClass]="{'bg-green-500': sync == SyncStatus.OK,
-                              'bg-orange-500': sync == SyncStatus.WARNING,
-                              'bg-red-500': sync == SyncStatus.ERROR,
-                              'bg-yellow-500': sync == SyncStatus.DOWN}"
-                  (click)="sync_now()"></div>
+            <div  class="ml-2 shadow-sm w-4 h-4 rounded-full cursor-pointer"
+                  [ngClass]="{'bg-gray-500': backend.sync == SyncStatus.DEFAULT,
+                              'bg-green-500': backend.sync == SyncStatus.OK,
+                              'bg-orange-500': backend.sync == SyncStatus.WARNING,
+                              'bg-red-500': backend.sync == SyncStatus.ERROR}"
+                  (click)="backend.sync_now()">
+              <div class="absolute w-4 h-4 rounded-full animate-ping bg-gray-200" *ngIf="backend.syncing"></div>
+            </div>
         </div>
       </div>
       <!-- end header -->
@@ -58,8 +59,8 @@
     <div class="w-full lg:w-2/5">
       <!-- header -->
       <div class="flex flex-row items-center justify-between px-5 mt-5">
-        <div class="font-bold text-xl" *ngIf="!refund">Current order</div>
-        <div class="font-bold text-xl" *ngIf="refund">Refund order</div>
+        <div class="font-bold text-xl" *ngIf="!order.refund">Current order</div>
+        <div class="font-bold text-xl" *ngIf="order.refund">Refund order</div>
         <div class="font-semibold space-x-1">
           <span class="px-4 py-2 rounded-md bg-red-100 text-red-500 cursor-pointer" (click)="clear_cart()">Clear all</span>
           <span class="px-4 py-2 rounded-md bg-purple-100 text-purple-800 cursor-pointer" (click)="toggle_refund()">Refund mode</span>
@@ -80,7 +81,7 @@
               <span class="px-3 py-1 rounded-md bg-gray-300 cursor-pointer" (click)="add_cart(line.product)">+</span>
             </div>
             <div class="font-semibold text-lg w-16 text-center">
-              {{ line.product.price * line.qty * (refund ? -1 : 1) }} €
+              {{ line.product.price * line.qty * (order.refund ? -1 : 1) }} €
             </div>
           </div>
         </div>      
@@ -91,14 +92,14 @@
         <div class="py-4 rounded-md shadow-lg">
           <div class="border-t-2 mt-3 py-2 px-4 flex items-center justify-between">
             <span class="font-semibold text-2xl">Total</span>
-            <span class="font-bold text-2xl">{{ order.total * (refund ? -1 : 1) }} €</span>
+            <span class="font-bold text-2xl">{{ order.total * (order.refund ? -1 : 1) }} €</span>
           </div>
         </div>
       </div>
       <!-- end total -->
 
       <!-- buttons -->
-      <div class="mt-20" *ngIf="!refund">
+      <div class="mt-20" *ngIf="!order.refund">
         <div class="px-5 mt-5">
           <div class="px-4 py-4 rounded-md shadow-lg text-center bg-green-500 text-white font-semibold cursor-pointer" (click)="pay('cash');">
             Pay with Cash
@@ -120,7 +121,7 @@
           </div>
         </div>
       </div>
-      <div class="mt-20" *ngIf="refund">
+      <div class="mt-20" *ngIf="order.refund">
         <div class="px-5 mt-5">
           <div class="px-4 py-4 rounded-md shadow-lg text-center bg-purple-500 text-white font-semibold cursor-pointer" (click)="pay('cash');">
             Refund with Cash
@@ -150,7 +151,7 @@
       <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all my-8 w-full max-w-lg">
         <div class="bg-white p-6 pb-4">
           <div class="mt-0 text-left">
-            <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Pay with {{ modal! }}</h3>
+            <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Pay with {{ order.payment_method }}</h3>
             <div class="mt-2">
               <p class="text-sm text-gray-500">Confirm payment?</p>
             </div>

@@ -1,13 +1,30 @@
 import { Injectable } from '@angular/core';
-import { Category, Product, Config } from './types';
+import { interval, Subscription } from 'rxjs';
+import { Category, Product, Config, Order, SyncStatus } from './types';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BackendService {
+  sync: SyncStatus;
+  syncing: boolean;
+  last_downlink_ok: boolean;
+  last_uplink_ok: boolean;
+  orders_buffer: Order[];
+  timer: Subscription;
+
+  constructor() {
+    this.sync = SyncStatus.DEFAULT;
+    this.syncing = this.last_downlink_ok = this.last_uplink_ok = false;
+    this.orders_buffer = [];
+    const stored = localStorage.getItem("orders_buffer");
+    if(stored) this.orders_buffer = JSON.parse(stored);
+    this.update_sync_state();
+    this.timer = interval(10000).subscribe(val => this.sync_now());
+  }
 
   fetch_config(): Config {
-    return {title: "Sample snack bar", terminal: "Terminal #42"};
+    return {title: "Sample snack bar", store_id: "test", terminal_id: "042", api_key: "testapikey"};
   }
 
   list_categories(): Category[] {
@@ -34,5 +51,34 @@ export class BackendService {
       {id: 31, name: "Tea", desc: "30cl\nBlack or Green tea", price: 0.5, photo: "/assets/products/tea.jpg"},
     ];
     return [];
+  }
+
+  push_order(order: Order) {
+    this.orders_buffer.push(order);
+    this.flush_buffers();
+  }
+
+  flush_buffers() {
+    localStorage.setItem("orders_buffer", JSON.stringify(this.orders_buffer));
+    this.update_sync_state();
+  }
+  
+  update_sync_state() {
+    if(!this.last_downlink_ok || !this.last_uplink_ok) {
+      this.sync = SyncStatus.ERROR;
+      return
+    }
+    if(this.orders_buffer.length == 0) this.sync = SyncStatus.OK;
+    else this.sync = SyncStatus.WARNING;
+  }
+
+  sync_now() {
+    this.syncing = true;
+    this.flush_buffers();
+    (async () => { 
+      await new Promise(f => setTimeout(f, 1000));
+      this.syncing = false;
+    })();
+    
   }
 }
