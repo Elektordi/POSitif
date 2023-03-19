@@ -11,6 +11,7 @@ export interface Category {
   id: number;
   name: string;
   products: Product[];
+  display_order: number;
 }
 
 export interface Product {
@@ -19,6 +20,7 @@ export interface Product {
   desc: string;
   price: number;
   photo?: string | { url:string; };
+  display_order: number;
 }
 
 export interface Order {

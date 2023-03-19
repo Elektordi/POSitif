@@ -29,9 +29,9 @@ export class AppComponent {
     this.backend.fetch_categories().then(data => {
       // @ts-ignore: y.photo.url raises ts exception
       data.forEach(x => x.products.forEach(y => y.photo = y.photo ? this.backend.media_url(y.photo.url) : undefined));
-      console.log(data);
-      this.categories_list = data;
-      this.select_category(this.categories_list[0])
+      this.categories_list = data.sort((a,b) => a.display_order - b.display_order);
+      this.categories_list.forEach(x => x.products.sort((a,b) => a.display_order - b.display_order));
+      this.select_category(this.categories_list[0]);
     });
   }
 
