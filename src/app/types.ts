@@ -1,13 +1,16 @@
 export interface Config {
   title: string;
-  store_id: string;
-  terminal_id: string;
-  api_key: string;
+  ref: string;
+  enable_cash: boolean;
+  enable_card: boolean;
+  enable_check: boolean;
+  enable_free: boolean;
 }
 
 export interface Category {
   id: number;
   name: string;
+  products: Product[];
 }
 
 export interface Product {
@@ -15,7 +18,7 @@ export interface Product {
   name: string;
   desc: string;
   price: number;
-  photo?: string;
+  photo?: string | { url:string; };
 }
 
 export interface Order {

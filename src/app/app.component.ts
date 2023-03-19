@@ -12,9 +12,9 @@ export class AppComponent {
   modal?: string;
   flash_color?: string;
   config? : Config;
+  terminal? : string;
   categories_list? : Category[];
   active_category? : Category;
-  products_list? : Product[];
   order : Order;
 
   SyncStatus: typeof SyncStatus = SyncStatus; // For enum access
@@ -23,16 +23,20 @@ export class AppComponent {
     this.order = {lines: [], total: 0, refund: false};
   }
 
-  async ngAfterViewInit() {
-    await new Promise(f => setTimeout(f, 1000));
-    this.config = this.backend.fetch_config();
-    this.categories_list = this.backend.list_categories();
-    if (this.categories_list) this.select_category(this.categories_list[0]);
+  ngAfterViewInit() {
+    this.terminal = "001"; // TODO
+    this.backend.fetch_config().then(data => this.config = data);
+    this.backend.fetch_categories().then(data => {
+      // @ts-ignore: y.photo.url raises ts exception
+      data.forEach(x => x.products.forEach(y => y.photo = y.photo ? this.backend.media_url(y.photo.url) : undefined));
+      console.log(data);
+      this.categories_list = data;
+      this.select_category(this.categories_list[0])
+    });
   }
 
   select_category(category: Category) {
     this.active_category = category;
-    this.products_list = this.backend.list_products(category);
   }
 
   add_cart(product: Product) {
@@ -80,7 +84,7 @@ export class AppComponent {
   pay_confirm(method: string) {
     this.order.payment_infos = "TODO";
     this.order.payment_timestamp = Date.now();
-    this.order.uid = `${this.config?.store_id}_${this.config?.terminal_id}_${this.order.payment_timestamp}`
+    this.order.uid = `${this.config?.ref}_${this.terminal}_${this.order.payment_timestamp}`
     this.backend.push_order(this.order);
     
     this.clear_cart();
