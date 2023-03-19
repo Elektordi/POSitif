@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_order_order_lines",
+  "info": {
+    "displayName": "Order line"
+  },
+  "options": {},
+  "attributes": {
+    "product": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::product.product"
+    },
+    "qty": {
+      "type": "integer",
+      "min": 0,
+      "required": true
+    }
+  }
+}

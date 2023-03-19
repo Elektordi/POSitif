@@ -1,0 +1,46 @@
+{
+  "kind": "collectionType",
+  "collectionName": "stores",
+  "info": {
+    "singularName": "store",
+    "pluralName": "stores",
+    "displayName": "Store",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "ref": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true,
+      "maxLength": 50,
+      "minLength": 6
+    },
+    "enable_cash": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    },
+    "enable_card": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    },
+    "enable_check": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    },
+    "enable_free": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    }
+  }
+}
