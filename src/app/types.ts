@@ -39,6 +39,6 @@ export interface Order {
 export enum SyncStatus {
   DEFAULT = 0,
   OK = 1, // Orders buffer empty and last downlink ok
-  WARNING = 2, // Orders buffer NOT empty and last downlink ok
-  ERROR = 3, // Last downlink KO
+  WARNING = 2, // Orders buffer NOT empty OR last downlink KO
+  ERROR = 3, // Orders buffer NOT empty and last downlink KO
 }
