@@ -5,7 +5,7 @@
   <p class="ml-2">Loading POSitif...</p>
 </div>  
 
-<div class="container mx-auto px-5 bg-white" *ngIf="config" [ngClass]="{'bg-purple-200': order.refund}">
+<div class="container mx-auto px-5" *ngIf="config" [ngClass]="{'bg-purple-200': order.refund, 'bg-white': !order.refund}">
   <div class="flex lg:flex-row flex-col-reverse shadow-lg">
     <!-- left section -->
     <div class="w-full lg:w-3/5 min-h-screen shadow-lg">
@@ -55,7 +55,7 @@
               <div class="font-light text-sm text-gray-400 grow whitespace-pre-wrap">{{ product.desc }}</div>
               <div class="font-bold text-lg text-gray-800">{{ product.price }} €</div>
             </div>
-            <img src="{{ product.photo }}" class="self-end h-full object-cover rounded-md" alt="" *ngIf="product.photo">
+            <img src="{{ backend.media_url(product.photo.url) }}" class="self-end h-full object-cover rounded-md" alt="" *ngIf="product.photo">
           </div>
         </div>
       </div>
@@ -92,7 +92,7 @@
         <div *ngFor="let line of order.lines">
           <div class="flex flex-row justify-between items-center mb-4">
             <div class="flex flex-row items-center w-2/5">
-              <img src="{{ line.product.photo }}" class="w-10 h-10 object-cover rounded-md" alt="" *ngIf="line.product">
+              <img src="{{ backend.media_url(line.product.photo.url) }}" class="w-10 h-10 object-cover rounded-md" alt="" *ngIf="line.product && line.product.photo">
               <span class="ml-4 font-semibold text-sm">{{ line.label }}</span>
             </div>
             <div class="w-32 flex justify-between">

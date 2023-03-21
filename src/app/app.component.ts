@@ -11,11 +11,11 @@ import { Category, Product, Config, Order, OrderLine, SyncStatus } from './types
 export class AppComponent {
   modal?: string;
   flash_color?: string;
-  config? : Config;
-  terminal? : string;
-  categories_list? : Category[];
-  active_category? : Category;
-  order : Order;
+  config?: Config;
+  terminal?: string;
+  categories_list?: Category[];
+  active_category?: Category;
+  order: Order;
 
   SyncStatus: typeof SyncStatus = SyncStatus; // For enum access
 
@@ -27,8 +27,6 @@ export class AppComponent {
     this.terminal = "001"; // TODO
     this.backend.fetch_config().then(data => this.config = data);
     this.backend.fetch_categories().then(data => {
-      // @ts-ignore: y.photo.url raises ts exception
-      data.forEach(x => x.products.forEach(y => y.photo = y.photo ? this.backend.media_url(y.photo.url) : undefined));
       this.categories_list = data.sort((a,b) => a.display_order - b.display_order);
       this.categories_list.forEach(x => x.products.sort((a,b) => a.display_order - b.display_order));
       this.select_category(this.categories_list[0]);
