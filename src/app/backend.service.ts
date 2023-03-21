@@ -74,7 +74,7 @@ export class BackendService {
 
   push_order(order: Order) {
     // @ts-ignore: prepare data for backend
-    order.lines.forEach(x => x.product = x.product.id); order.store = 1;
+    order.lines.forEach(x => x.product = x.product?.id); order.store = 1;
     this.orders_buffer.push(order);
     this.flush_buffers();
   }

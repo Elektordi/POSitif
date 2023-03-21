@@ -1,7 +1,8 @@
 {
   "collectionName": "components_order_order_lines",
   "info": {
-    "displayName": "Order line"
+    "displayName": "Order line",
+    "description": ""
   },
   "options": {},
   "attributes": {
@@ -13,6 +14,14 @@
     "qty": {
       "type": "integer",
       "min": 0,
+      "required": true
+    },
+    "price": {
+      "type": "decimal",
+      "required": true
+    },
+    "label": {
+      "type": "string",
       "required": true
     }
   }

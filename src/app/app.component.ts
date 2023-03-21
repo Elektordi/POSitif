@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { BackendService } from './backend.service';
 import { SoundService } from './sound.service';
-import { Category, Product, Config, Order, SyncStatus } from './types';
+import { Category, Product, Config, Order, OrderLine, SyncStatus } from './types';
 
 @Component({
   selector: 'app-root',
@@ -35,31 +35,35 @@ export class AppComponent {
     });
   }
 
-  select_category(category: Category) {
+  select_category(category?: Category) {
     this.active_category = category;
   }
 
   add_cart(product: Product) {
-    const l = this.order.lines.find(e => e.product.id == product.id);
+    const l = this.order.lines.find(e => e.product && e.product.id == product.id);
     if(l)
       l.qty += 1;
     else
-      this.order.lines.push({product: product, qty: 1});
+      this.order.lines.push({product: product, label: product.name, qty: 1, price: product.price});
     this.refresh_total();
   }
 
-  sub_cart(product: Product) {
-    var l = this.order!.lines.find(e => e.product.id == product.id);
-    if(!l) return;
-    if(l.qty > 1)
-      l.qty -= 1;
-    else
-      this.order.lines = this.order.lines.filter(e => e.product.id != product.id);
+  add_custom(label: string, price: number) {
+    if(!label || !price) return;
+    this.order.lines.push({label: label, qty: 1, price: price});
+    this.refresh_total();
+  }
+
+  update_cart(line: OrderLine, update: number) {
+    line.qty += update;
+    if(line.qty <= 0) {
+      this.order.lines = this.order.lines.filter(l => l !== line);
+    }
     this.refresh_total();
   }
 
   refresh_total() {
-    this.order.total = this.order.lines.reduce((a, v) => a + v.product.price * v.qty, 0);
+    this.order.total = this.order.lines.reduce((a, v) => a + v.price * v.qty, 0);
   }
 
   clear_cart() {

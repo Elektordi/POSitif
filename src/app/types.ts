@@ -23,11 +23,15 @@ export interface Product {
   display_order: number;
 }
 
+export interface OrderLine {
+  product?: Product;
+  qty: number;
+  price: number;
+  label: string;
+}
+
 export interface Order {
-  lines: {
-    product: Product;
-    qty: number;
-  }[];
+  lines: OrderLine[];
   total: number;
   refund: boolean;
   payment_method?: string;

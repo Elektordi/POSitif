@@ -37,11 +37,18 @@
             {{ category.name }}
           </span>
         </div>
+        <div class="self-end">
+          <span   class="px-5 py-1 rounded-2xl text-sm font-semibold mr-4"
+                  [ngClass]="{'bg-cyan-500 text-white': active_category == null, 'cursor-pointer': active_category != null}"
+                  (click)="select_category(undefined)">
+            +
+          </span>
+        </div>
       </div>
       <!-- end categories -->
       <!-- products -->
-      <div class="grid grid-cols-3 gap-4 px-5 mt-5 overflow-y-auto h-3/4 content-start">
-        <div *ngFor="let product of active_category?.products" class="cursor-pointer" (click)="add_cart(product)">
+      <div class="grid grid-cols-3 gap-4 px-5 mt-5 overflow-y-auto h-3/4 content-start" *ngIf="active_category">
+        <div *ngFor="let product of active_category.products" class="cursor-pointer" (click)="add_cart(product)">
           <div class="px-3 py-3 flex flex-row border border-gray-200 rounded-md h-32 justify-between">
             <div class="flex flex-col justify-between">
               <div class="font-bold text-gray-800">{{ product.name }}</div>
@@ -49,6 +56,19 @@
               <div class="font-bold text-lg text-gray-800">{{ product.price }} €</div>
             </div>
             <img src="{{ product.photo }}" class="self-end h-full object-cover rounded-md" alt="" *ngIf="product.photo">
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 gap-4 px-5 mt-5 overflow-y-auto h-3/4 content-start" *ngIf="active_category == null">
+        <div class="px-3 py-3 flex flex-row border border-gray-200 rounded-md h-32 justify-between">
+          <div class="flex flex-col grow">
+            <div class="font-bold text-gray-800">Custom product</div>
+            <div class="font-light">
+              <span class="w-16">Label: </span> <input #customLabel type="text" class="form-input px-4 py-3 h-2 w-4/5 rounded-full">
+            </div>
+            <div class="font-light"><span class="w-16">Price: </span><input #customPrice type="number" class="form-input px-4 py-3 h-2 w-32 rounded-full" min="0" max="999"> €</div>
+            <span class="px-3 py-1 rounded-md bg-gray-300 cursor-pointer self-end"
+                  (click)="add_custom(customLabel.value, +customPrice.value); customLabel.value=''; customPrice.value='';">OK</span>
           </div>
         </div>
       </div>
@@ -72,16 +92,16 @@
         <div *ngFor="let line of order.lines">
           <div class="flex flex-row justify-between items-center mb-4">
             <div class="flex flex-row items-center w-2/5">
-              <img src="{{ line.product.photo }}" class="w-10 h-10 object-cover rounded-md" alt="">
-              <span class="ml-4 font-semibold text-sm">{{ line.product.name }}</span>
+              <img src="{{ line.product.photo }}" class="w-10 h-10 object-cover rounded-md" alt="" *ngIf="line.product">
+              <span class="ml-4 font-semibold text-sm">{{ line.label }}</span>
             </div>
             <div class="w-32 flex justify-between">
-              <span class="px-3 py-1 rounded-md bg-gray-300 cursor-pointer" [ngClass]="{'bg-red-300': line.qty == 1}" (click)="sub_cart(line.product)">-</span>
+              <span class="px-3 py-1 rounded-md bg-gray-300 cursor-pointer" [ngClass]="{'bg-red-300': line.qty == 1}" (click)="update_cart(line, -1)">-</span>
               <span class="font-semibold mx-4">{{ line.qty }}</span>
-              <span class="px-3 py-1 rounded-md bg-gray-300 cursor-pointer" (click)="add_cart(line.product)">+</span>
+              <span class="px-3 py-1 rounded-md bg-gray-300 cursor-pointer" (click)="update_cart(line, +1)">+</span>
             </div>
             <div class="font-semibold text-lg w-16 text-center">
-              {{ line.product.price * line.qty * (order.refund ? -1 : 1) }} €
+              {{ line.price * line.qty * (order.refund ? -1 : 1) }} €
             </div>
           </div>
         </div>      
