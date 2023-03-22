@@ -3,10 +3,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
+import { KeypadComponent } from './keypad/keypad.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    KeypadComponent
   ],
   imports: [
     BrowserModule,
