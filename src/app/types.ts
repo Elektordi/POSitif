@@ -8,10 +8,10 @@ export interface Setup {
 export interface Config {
   title: string;
   ref: string;
-  enable_cash: boolean;
-  enable_card: boolean;
-  enable_check: boolean;
-  enable_free: boolean;
+//  enable_cash: boolean;
+//  enable_card: boolean;
+//  enable_check: boolean;
+//  enable_free: boolean;
 }
 
 export interface Category {

@@ -103,10 +103,12 @@ export class AppComponent {
     }
     this.order.payment_method = method;
     this.modal = method;
+    if(method == "free" && this.order.total == 0) {
+        this.pay_confirm(method);
+    }
   }
 
   pay_confirm(method: string) {
-    this.order.payment_method = method;
     if(method == "cash") {
       if(this.view_keypad.value < this.order.total) {
         this.sound.bip_error();
