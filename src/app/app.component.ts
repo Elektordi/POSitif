@@ -16,6 +16,7 @@ export class AppComponent {
   categories_list?: Category[];
   active_category?: Category;
   order: Order;
+  last_order?: Order;
 
   SyncStatus: typeof SyncStatus = SyncStatus; // For enum access
 
@@ -102,5 +103,9 @@ export class AppComponent {
       await new Promise(f => setTimeout(f, 200));
       this.flash_color = undefined;
     })();
+  }
+
+  show_last_order() {
+    this.last_order = this.backend.get_last_order();
   }
 }

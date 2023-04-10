@@ -15,6 +15,7 @@ export class BackendService {
   syncing: boolean;
   last_call_ok: boolean;
   orders_buffer: Order[];
+  last_order: Order;
   timer: Subscription;
   httpOptions: {}
 
@@ -22,8 +23,11 @@ export class BackendService {
     this.sync = SyncStatus.DEFAULT;
     this.syncing = this.last_call_ok = false;
     this.orders_buffer = [];
+    this.last_order = {lines: [], total: 0, refund: false};
     var stored = localStorage.getItem("orders_buffer");
     if(stored) this.orders_buffer = JSON.parse(stored);
+    var stored = localStorage.getItem("last_order");
+    if(stored) this.last_order = JSON.parse(stored);
     this.httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
@@ -73,6 +77,7 @@ export class BackendService {
   }
 
   push_order(order: Order) {
+    this.last_order = JSON.parse(JSON.stringify(order)); // Deepcopy
     // @ts-ignore: prepare data for backend
     order.lines.forEach(x => x.product = x.product?.id); order.store = 1;
     this.orders_buffer.push(order);
@@ -81,6 +86,7 @@ export class BackendService {
 
   flush_buffers() {
     localStorage.setItem("orders_buffer", JSON.stringify(this.orders_buffer));
+    localStorage.setItem("last_order", JSON.stringify(this.last_order));
     this.update_sync_state();
     if(this.orders_buffer.length == 0) return;
     var data = {data: this.orders_buffer[0]};
@@ -110,6 +116,10 @@ export class BackendService {
       this.syncing = false;
     })();
     
+  }
+
+  get_last_order() : Order {
+    return this.last_order;
   }
 }
 

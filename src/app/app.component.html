@@ -84,6 +84,7 @@
         <div class="font-semibold space-x-1">
           <span class="px-4 py-2 rounded-md bg-red-100 text-red-500 cursor-pointer" (click)="clear_cart()">Clear all</span>
           <span class="px-4 py-2 rounded-md bg-purple-100 text-purple-800 cursor-pointer" (click)="toggle_refund()">Refund mode</span>
+          <span class="px-4 py-2 rounded-md bg-gray-100 text-gray-800 cursor-pointer" (click)="show_last_order()">Last order</span>
         </div>
       </div>
       <!-- end header -->
@@ -191,6 +192,49 @@
         <div class="bg-gray-50 px-6 py-3 flex flex-row-reverse">
           <span class="inline-flex w-auto justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 ml-3 cursor-pointer" (click)="pay_confirm(modal!);">Confirm</span>
           <span class="mt-0 inline-flex w-auto justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 cursor-pointer" (click)="modal=undefined;">Cancel</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="relative z-10" *ngIf="last_order">
+  <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+  <div class="fixed inset-0 z-10 overflow-y-auto">
+    <div class="flex min-h-full items-end justify-center text-center items-center p-0">
+      <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all my-8 w-full max-w-lg">
+        <div class="bg-white p-6 pb-4">
+          <div class="mt-0 text-left">
+            <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Last order ({{ last_order.payment_timestamp | date: 'dd/MM/YYYY HH:mm:ss' }})</h3>
+            <div class="px-5 py-4 mt-5 overflow-y-auto h-64">
+              <div *ngFor="let line of last_order.lines">
+                <div class="flex flex-row justify-between items-center mb-4">
+                  <div class="flex flex-row items-center w-2/5">
+                    <img src="{{ backend.media_url(line.product.photo.url) }}" class="w-10 h-10 object-cover rounded-md" alt="" *ngIf="line.product && line.product.photo">
+                    <span class="ml-4 font-semibold text-sm">{{ line.label }}</span>
+                  </div>
+                  <div class="w-32 flex justify-between">
+                    <span class="font-semibold mx-4">x {{ line.qty }} =</span>
+                  </div>
+                  <div class="font-semibold text-lg w-16 text-center">
+                    {{ line.price * line.qty }} €
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="px-5 mt-5">
+              <div class="py-4">
+                <div class="border-t-2 mt-3 py-2 px-4 flex items-center justify-between">
+                  <span class="font-semibold text-2xl">Total <span *ngIf="last_order.refund">refund</span></span>
+                  <span class="font-bold text-2xl">{{ last_order.total }} €</span>
+                </div>
+                <div class="italic mt-1 px-4">Paid with {{ last_order.payment_method }} ({{ last_order.payment_infos }})</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gray-50 px-6 py-3 flex flex-row-reverse">
+          <span class="mt-0 inline-flex w-auto justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 cursor-pointer" (click)="last_order=undefined;">Close</span>
         </div>
       </div>
     </div>
