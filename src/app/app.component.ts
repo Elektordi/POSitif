@@ -114,6 +114,12 @@ export class AppComponent {
         return;
       }
       this.order.payment_infos = `${this.view_keypad.value}€ - ${this.order.total}€ = ${this.view_keypad.value - this.order.total}€`;
+    } else if(method == "card") {
+      if(this.order.total < 5) {
+        this.sound.bip_error();
+        this.flash('red');
+        return;
+      }
     } else if(method == "check" || method == "manual") {
       this.order.payment_infos = this.view_details.nativeElement.value;
     }

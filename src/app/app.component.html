@@ -186,7 +186,8 @@
                 </div>
               </div>
               <div class="flex-row" *ngIf="modal == 'card'">
-                <p>TODO</p>
+                <p class="text-red-500" *ngIf="order.total < 5">Cannot pay by card if total is less than 5€!</p>
+                <p *ngIf="order.total >= 5">Please proceed to card payment on terminal...</p>
               </div>
               <div class="flex-row" *ngIf="modal == 'check' || modal == 'manual'">
                 <p>Please write payment details: (check number, name, etc.)</p>
