@@ -3,7 +3,7 @@
 <div class="flex items-center justify-center min-h-screen" *ngIf="!config">
   <div style="border-top-color:transparent" class="w-8 h-8 border-4 border-blue-200 rounded-full animate-spin"></div>
   <p class="ml-2">Loading POSitif...</p>
-</div>  
+</div>
 
 <div class="container mx-auto px-5" *ngIf="config" [ngClass]="{'bg-purple-200': order.refund, 'bg-white': !order.refund}">
   <div class="flex lg:flex-row flex-col-reverse shadow-lg">
@@ -174,7 +174,6 @@
           <div class="mt-0 text-left">
             <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Pay with {{ order.payment_method }}</h3>
             <div class="mt-2">
-              <p class="text-sm text-gray-500">Confirm payment?</p>
               <div class="flex flex-row" *ngIf="modal == 'cash'">
                 <div class="w-1/2">
                   <app-keypad #keypad></app-keypad>
@@ -185,6 +184,16 @@
                   <p *ngIf="keypad.value >= order.total">Give back: {{ keypad.value - order.total }} €</p>
                   <p *ngIf="keypad.value < order.total">Missing: {{ order.total - keypad.value }} €</p>
                 </div>
+              </div>
+              <div class="flex-row" *ngIf="modal == 'card'">
+                <p>TODO</p>
+              </div>
+              <div class="flex-row" *ngIf="modal == 'check' || modal == 'manual'">
+                <p>Please write payment details: (check number, name, etc.)</p>
+                <p><input #details type="text" class="form-input px-4 py-3 h-2 w-full rounded-full"></p>
+              </div>
+              <div class="flex-row" *ngIf="modal == 'free'">
+                <p class="text-sm text-gray-500">Confirm free order?</p>
               </div>
             </div>
           </div>
@@ -228,7 +237,7 @@
                   <span class="font-semibold text-2xl">Total <span *ngIf="last_order.refund">refund</span></span>
                   <span class="font-bold text-2xl">{{ last_order.total }} €</span>
                 </div>
-                <div class="italic mt-1 px-4">Paid with {{ last_order.payment_method }} ({{ last_order.payment_infos }})</div>
+                <div class="italic mt-1 px-4">Paid with {{ last_order.payment_method }}<span *ngIf="last_order.payment_infos"> ({{ last_order.payment_infos }})</span></div>
               </div>
             </div>
           </div>
