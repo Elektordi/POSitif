@@ -25,8 +25,23 @@ export class AppComponent {
   }
 
   ngAfterViewInit() {
-    this.terminal = "001"; // TODO
-    this.backend.fetch_config().then(data => this.config = data);
+
+    const query = window.document.location.search;
+    if(query && query.startsWith("?setup&")) {
+        const params = new URLSearchParams(query) as any;
+        this.backend.set_setup({
+            backend_url: params.get("backend"),
+            backend_key: params.get("key"),
+            store: parseInt(params.get("store")),
+            terminal: parseInt(params.get("terminal")),
+        });
+        alert("Setup OK");
+        window.document.location.search = "";
+        return;
+    }
+
+    this.backend.fetch_config().then(data => this.config = data, err => alert(err));
+    this.terminal = this.backend.get_terminal_id();
     this.backend.fetch_categories().then(data => {
       this.categories_list = data.sort((a,b) => a.display_order - b.display_order);
       this.categories_list.forEach(x => x.products.sort((a,b) => a.display_order - b.display_order));

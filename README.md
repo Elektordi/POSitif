@@ -2,6 +2,11 @@
 
 Touchscreen web point of sale for snack bar.
 
+Setup URL:
+```
+http://localhost:4200/?setup&backend=http://localhost:1337&key=xxxxx&store=1&terminal=1
+```
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.

@@ -1,3 +1,10 @@
+export interface Setup {
+  backend_url?: string;
+  backend_key?: string;
+  store?: number;
+  terminal?: number;
+}
+
 export interface Config {
   title: string;
   ref: string;
