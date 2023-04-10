@@ -223,10 +223,10 @@
                     <span class="ml-4 font-semibold text-sm">{{ line.label }}</span>
                   </div>
                   <div class="w-32 flex justify-between">
-                    <span class="font-semibold mx-4">x {{ line.qty }} =</span>
+                    <span class="font-semibold mx-4">x {{ line.qty * (last_order.refund ? -1 : 1) }} =</span>
                   </div>
                   <div class="font-semibold text-lg w-16 text-center">
-                    {{ line.price * line.qty }} €
+                    {{ line.price * line.qty * (last_order.refund ? -1 : 1) }} €
                   </div>
                 </div>
               </div>
