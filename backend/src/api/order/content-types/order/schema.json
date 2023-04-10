@@ -26,7 +26,7 @@
     },
     "payment_infos": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "payment_timestamp": {
       "type": "datetime",

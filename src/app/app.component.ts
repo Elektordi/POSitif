@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { BackendService } from './backend.service';
 import { SoundService } from './sound.service';
 import { Category, Product, Config, Order, OrderLine, SyncStatus } from './types';
+import { KeypadComponent } from './keypad/keypad.component';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,9 @@ export class AppComponent {
   active_category?: Category;
   order: Order;
   last_order?: Order;
+
+  @ViewChild('keypad')
+  keypad!: KeypadComponent;
 
   SyncStatus: typeof SyncStatus = SyncStatus; // For enum access
 
@@ -95,12 +99,20 @@ export class AppComponent {
       this.flash('red');
       return;
     }
-    this.modal = method;
     this.order.payment_method = method;
+    this.modal = method;
   }
 
   pay_confirm(method: string) {
-    this.order.payment_infos = "TODO";
+    this.order.payment_method = method;
+    if(method == "cash") {
+      if(this.keypad.value < this.order.total) {
+        this.sound.bip_error();
+        this.flash('red');
+        return;
+      }
+      this.order.payment_infos = `${this.keypad.value}€ - ${this.order.total}€ = ${this.keypad.value - this.order.total}€`;
+    }
     this.order.payment_timestamp = Date.now();
     this.order.uid = `${this.config?.ref}_${this.terminal}_${this.order.payment_timestamp}`
     this.backend.push_order(this.order);
