@@ -1,0 +1,24 @@
+{
+  "kind": "singleType",
+  "collectionName": "configs",
+  "info": {
+    "singularName": "config",
+    "pluralName": "configs",
+    "displayName": "Config"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "stripe_public_key": {
+      "type": "string",
+      "required": true
+    },
+    "stripe_private_key": {
+      "type": "string",
+      "private": true,
+      "required": true
+    }
+  }
+}
