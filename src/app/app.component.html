@@ -1,11 +1,15 @@
 <!-- This a Dashboard Point of sale system by rahulsya. https://tailwindcomponents.com/component/point-of-sale-system -->
 
-<div class="flex items-center justify-center min-h-screen" *ngIf="!config">
+<div class="flex items-center justify-center min-h-screen" *ngIf="crash">
+  <p class="ml-2">{{crash}}</p>
+</div>
+
+<div class="flex items-center justify-center min-h-screen" *ngIf="!crash && !config">
   <div style="border-top-color:transparent" class="w-8 h-8 border-4 border-blue-200 rounded-full animate-spin"></div>
   <p class="ml-2">Loading POSitif...</p>
 </div>
 
-<div class="container mx-auto px-5" *ngIf="config" [ngClass]="{'bg-purple-200': order.refund, 'bg-white': !order.refund}">
+<div class="container mx-auto px-5" *ngIf="!crash && config" [ngClass]="{'bg-purple-200': order.refund, 'bg-white': !order.refund}">
   <div class="flex lg:flex-row flex-col-reverse shadow-lg">
     <!-- left section -->
     <div class="w-full lg:w-3/5 min-h-screen shadow-lg">

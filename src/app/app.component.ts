@@ -10,6 +10,7 @@ import { KeypadComponent } from './keypad/keypad.component';
   styleUrls: ['./app.component.less']
 })
 export class AppComponent {
+  crash?: string;
   modal?: string;
   flash_color?: string;
   config?: Config;
@@ -41,11 +42,16 @@ export class AppComponent {
             store: parseInt(params.get("store")),
             terminal: parseInt(params.get("terminal")),
         });
-        alert("Setup OK");
-        window.document.location.search = "";
-        return;
     }
 
+    if(!this.backend.setup.backend_url) {
+      this.crash = "Missing POSitif config!";
+      return;
+    }
+    this.pos_init();
+  }
+
+  pos_init() {
     this.backend.fetch_config().then(data => this.config = data, err => alert(err));
     this.terminal = this.backend.get_terminal_id();
     this.backend.fetch_categories().then(data => {

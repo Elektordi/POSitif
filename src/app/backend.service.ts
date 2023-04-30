@@ -15,7 +15,6 @@ export class BackendService {
   orders_buffer: Order[];
   last_order: Order;
   timer: Subscription;
-  httpOptions: {}
 
   constructor(private http: HttpClient) {
     this.sync = SyncStatus.DEFAULT;
@@ -23,20 +22,25 @@ export class BackendService {
     this.setup = {};
     this.orders_buffer = [];
     this.last_order = {lines: [], total: 0, refund: false};
+
     var stored = localStorage.getItem("setup");
     if(stored) this.setup = JSON.parse(stored);
     var stored = localStorage.getItem("orders_buffer");
     if(stored) this.orders_buffer = JSON.parse(stored);
     var stored = localStorage.getItem("last_order");
     if(stored) this.last_order = JSON.parse(stored);
-    this.httpOptions = {
+
+    this.update_sync_state();
+    this.timer = interval(10000).subscribe(val => this.sync_now());
+  }
+
+  httpOptions() {
+    return {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
         Authorization: `Bearer ${this.setup.backend_key}`
       })
-    };
-    this.update_sync_state();
-    this.timer = interval(10000).subscribe(val => this.sync_now());
+    }
   }
 
   handleError(error: HttpErrorResponse) {
@@ -63,7 +67,7 @@ export class BackendService {
   fetch_config(): Promise<Config> {
     return new Promise((resolve, reject) => {
       if(!this.setup.backend_url) return reject("Backend url missing.");
-      this.http.get<Strapi>(`${this.setup.backend_url}/api/stores/${this.setup.store}`, this.httpOptions)
+      this.http.get<Strapi>(`${this.setup.backend_url}/api/stores/${this.setup.store}`, this.httpOptions())
         .pipe(catchError(err => this.handleError(err)))
         .subscribe((data) => resolve(data.data));
     });
@@ -72,7 +76,7 @@ export class BackendService {
   fetch_categories(): Promise<Category[]> {
     return new Promise((resolve, reject) => {
       if(!this.setup.backend_url) return reject("Backend url missing.");
-      this.http.get<Strapi>(`${this.setup.backend_url}/api/categories?filters[store][id][$eq]=${this.setup.store}&populate[]=products&populate[]=products.photo`, this.httpOptions)
+      this.http.get<Strapi>(`${this.setup.backend_url}/api/categories?filters[store][id][$eq]=${this.setup.store}&populate[]=products&populate[]=products.photo`, this.httpOptions())
         .pipe(catchError(err => this.handleError(err)))
         .subscribe((data) => { this.last_call_ok = true; this.update_sync_state(); resolve(data.data); })
     });
@@ -100,7 +104,7 @@ export class BackendService {
     this.update_sync_state();
     if(this.orders_buffer.length == 0) return;
     var data = {data: this.orders_buffer[0]};
-    this.http.post<Strapi>(`${this.setup.backend_url}/api/orders`, data, this.httpOptions)
+    this.http.post<Strapi>(`${this.setup.backend_url}/api/orders`, data, this.httpOptions())
       .pipe(catchError(err => this.handleError(err)))
       .subscribe((data) => {console.log(data); this.last_call_ok = true; this.orders_buffer.shift(); this.flush_buffers();})
   }
