@@ -14,6 +14,11 @@ export interface Config {
 //  enable_free: boolean;
 }
 
+export interface StripeConfig {
+  stripe_public_key: string;
+  stripe_location: string;
+}
+
 export interface Category {
   id: number;
   name: string;

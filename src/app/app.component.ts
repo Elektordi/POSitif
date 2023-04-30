@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, NgZone } from '@angular/core';
 import { BackendService } from './backend.service';
 import { SoundService } from './sound.service';
 import { Category, Product, Config, Order, OrderLine, SyncStatus } from './types';
@@ -27,12 +27,11 @@ export class AppComponent {
 
   SyncStatus: typeof SyncStatus = SyncStatus; // For enum access
 
-  constructor(public backend: BackendService, public sound: SoundService) {
+  constructor(public backend: BackendService, public sound: SoundService, public zone: NgZone) {
     this.order = {lines: [], total: 0, refund: false};
   }
 
   ngAfterViewInit() {
-
     const query = window.document.location.search;
     if(query && query.startsWith("?setup&")) {
         const params = new URLSearchParams(query) as any;
@@ -59,6 +58,11 @@ export class AppComponent {
       this.categories_list.forEach(x => x.products.sort((a,b) => a.display_order - b.display_order));
       this.select_category(this.categories_list[0]);
     });
+
+    window.stripe_get_token = () => {
+      this.backend.fetch_stripe_token().then(r => window.app.pushToken(r)).catch(e => { alert(e); window.app.pushToken("ERROR"); });
+    }
+    this.backend.fetch_stripe_config().then(data => window.app.initStripe(data.stripe_location, "stripe_get_token"));
   }
 
   select_category(category?: Category) {
@@ -108,9 +112,25 @@ export class AppComponent {
       return;
     }
     this.order.payment_method = method;
+    this.order.uid = `${this.config?.ref}_${this.terminal}_${Date.now()}`
     this.modal = method;
     if(method == "free" && this.order.total == 0) {
-        this.pay_confirm(method);
+      this.pay_confirm(method);
+    }
+    if(method == "card" && this.order.total >= 5) {
+      window.stripe_payment_callback = (uid, success, data) => {
+        this.zone.run(() => {
+          if(this.order.uid != uid) return;
+          if(success) {
+            this.order.payment_infos = data;
+            this.pay_confirm("card");
+          } else {
+            this.sound.bip_error();
+            this.flash('red');
+          }
+        });
+      }
+      window.app.startPayment(Math.trunc(this.order.total*100), this.order.uid, "stripe_payment_callback")
     }
   }
 
@@ -122,17 +142,10 @@ export class AppComponent {
         return;
       }
       this.order.payment_infos = `${this.view_keypad.value}€ - ${this.order.total}€ = ${this.view_keypad.value - this.order.total}€`;
-    } else if(method == "card") {
-      if(this.order.total < 5) {
-        this.sound.bip_error();
-        this.flash('red');
-        return;
-      }
     } else if(method == "check" || method == "manual") {
       this.order.payment_infos = this.view_details.nativeElement.value;
     }
     this.order.payment_timestamp = Date.now();
-    this.order.uid = `${this.config?.ref}_${this.terminal}_${this.order.payment_timestamp}`
     this.backend.push_order(this.order);
     
     this.clear_cart();
@@ -140,6 +153,13 @@ export class AppComponent {
     this.modal = undefined;
     this.sound.bip_success();
     this.flash('green');
+  }
+
+  pay_cancel(method: string) {
+    if(method == "card") {
+      window.app.cancelPayment();
+    }
+    this.modal = undefined;
   }
 
   flash(color: string) {
@@ -152,5 +172,24 @@ export class AppComponent {
 
   show_last_order() {
     this.last_order = this.backend.get_last_order();
+  }
+
+}
+
+
+declare global {
+  interface Window {
+    app: StripeWebViewApp;
+    stripe_get_token(): void;
+    stripe_payment_callback(uid: string, success: boolean, data: string): void;
+  }
+
+  interface StripeWebViewApp {
+    makeToast(message: string, long: boolean): void;
+    initStripe(location: string, token_js_function: string): void;
+    pushToken(token: string): void;
+    startPayment(amount: number, uid: string, callback_js_function: string): void;
+    cancelPayment(): void;
+    scanQrCode(callback_js_function: string): void;
   }
 }

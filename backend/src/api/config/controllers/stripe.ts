@@ -7,8 +7,7 @@ export default {
     const stripe = new Stripe(config.stripe_private_key, {'apiVersion': '2022-11-15'});
     const connectionToken = await stripe.terminal.connectionTokens.create();
     ctx.body = {
-      'stripe_public_key': config.stripe_public_key,
-      'stripe_terminal_key': connectionToken.secret,
+      'data': connectionToken.secret,
     };
   },
 };

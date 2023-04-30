@@ -4,7 +4,8 @@
   "info": {
     "singularName": "config",
     "pluralName": "configs",
-    "displayName": "Config"
+    "displayName": "Config",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -18,6 +19,10 @@
     "stripe_private_key": {
       "type": "string",
       "private": true,
+      "required": true
+    },
+    "stripe_location": {
+      "type": "string",
       "required": true
     }
   }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { interval, Subscription, Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
-import { Category, Product, Setup, Config, Order, SyncStatus } from './types';
+import { Category, Setup, Config, StripeConfig, Order, SyncStatus } from './types';
 
 @Injectable({
   providedIn: 'root'
@@ -79,6 +79,24 @@ export class BackendService {
       this.http.get<Strapi>(`${this.setup.backend_url}/api/categories?filters[store][id][$eq]=${this.setup.store}&populate[]=products&populate[]=products.photo`, this.httpOptions())
         .pipe(catchError(err => this.handleError(err)))
         .subscribe((data) => { this.last_call_ok = true; this.update_sync_state(); resolve(data.data); })
+    });
+  }
+
+  fetch_stripe_config(): Promise<StripeConfig> {
+    return new Promise((resolve, reject) => {
+      if(!this.setup.backend_url) return reject("Backend url missing.");
+      this.http.get<Strapi>(`${this.setup.backend_url}/api/config`, this.httpOptions())
+        .pipe(catchError(err => this.handleError(err)))
+        .subscribe((data) => resolve(data.data));
+    });
+  }
+
+  fetch_stripe_token(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      if(!this.setup.backend_url) return reject("Backend url missing.");
+      this.http.post<Strapi>(`${this.setup.backend_url}/api/config/token`, {}, this.httpOptions())
+        .pipe(catchError(err => this.handleError(err)))
+        .subscribe((data) => resolve(data.data));
     });
   }
 
