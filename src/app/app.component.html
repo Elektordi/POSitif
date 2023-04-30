@@ -199,9 +199,8 @@
                   <p *ngIf="keypad.value < order.total">Missing: {{ order.total - keypad.value }} €</p>
                 </div>
               </div>
-              <div class="flex-row" *ngIf="modal == 'card'">
-                <p class="text-red-500" *ngIf="order.total < 5">Cannot pay by card if total is less than 5€!</p>
-                <p *ngIf="order.total >= 5">Please proceed to card payment on terminal...</p>
+              <div class="flex-row" *ngIf="modal == 'card' && !pay_error">
+                <p>Please proceed to card payment on terminal...</p>
               </div>
               <div class="flex-row" *ngIf="modal == 'check' || modal == 'manual'">
                 <p>Please write payment details: (check number, name, etc.)</p>
@@ -210,6 +209,7 @@
               <div class="flex-row" *ngIf="modal == 'free'">
                 <p class="text-sm text-gray-500">Confirm free order?</p>
               </div>
+              <p class="text-red-500" *ngIf="pay_error">{{pay_error}}</p>
             </div>
           </div>
         </div>

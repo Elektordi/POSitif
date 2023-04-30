@@ -19,6 +19,7 @@ export class AppComponent {
   active_category?: Category;
   order: Order;
   last_order?: Order;
+  pay_error?: string;
 
   @ViewChild('keypad')
   view_keypad!: KeypadComponent;
@@ -113,24 +114,30 @@ export class AppComponent {
     }
     this.order.payment_method = method;
     this.order.uid = `${this.config?.ref}_${this.terminal}_${Date.now()}`
+    this.pay_error = undefined;
     this.modal = method;
     if(method == "free" && this.order.total == 0) {
       this.pay_confirm(method);
     }
-    if(method == "card" && this.order.total >= 5) {
-      window.stripe_payment_callback = (uid, success, data) => {
-        this.zone.run(() => {
-          if(this.order.uid != uid) return;
-          if(success) {
-            this.order.payment_infos = data;
-            this.pay_confirm("card");
-          } else {
-            this.sound.bip_error();
-            this.flash('red');
-          }
-        });
+    if(method == "card") {
+      if(this.order.total >= 5) {
+        window.stripe_payment_callback = (uid, success, data) => {
+          this.zone.run(() => {
+            if(this.order.uid != uid || !this.modal) return;
+            if(success) {
+              this.order.payment_infos = data;
+              this.pay_confirm("card");
+            } else {
+              this.pay_error = data;
+              this.sound.bip_error();
+              this.flash('red');
+            }
+          });
+        }
+        window.app.startPayment(Math.trunc(this.order.total*100), this.order.uid, "stripe_payment_callback")
+      } else {
+        this.pay_error = "Cannot pay by card if total is less than 5€!";
       }
-      window.app.startPayment(Math.trunc(this.order.total*100), this.order.uid, "stripe_payment_callback")
     }
   }
 
@@ -139,10 +146,17 @@ export class AppComponent {
       if(this.view_keypad.value < this.order.total) {
         this.sound.bip_error();
         this.flash('red');
+        this.pay_error = "Not enough cash for payment!";
         return;
       }
       this.order.payment_infos = `${this.view_keypad.value}€ - ${this.order.total}€ = ${this.view_keypad.value - this.order.total}€`;
     } else if(method == "check" || method == "manual") {
+      if(!this.view_details.nativeElement.value) {
+        this.sound.bip_error();
+        this.flash('red');
+        this.pay_error = "Missing reference!";
+        return;
+      }
       this.order.payment_infos = this.view_details.nativeElement.value;
     }
     this.order.payment_timestamp = Date.now();
