@@ -9,8 +9,8 @@
   <p class="ml-2">Loading POSitif...</p>
 </div>
 
-<div class="container mx-auto px-5" *ngIf="!crash && config" [ngClass]="{'bg-purple-200': order.refund, 'bg-white': !order.refund}">
-  <div class="flex lg:flex-row flex-col-reverse shadow-lg">
+<div class="mx-auto px-5" *ngIf="!crash && config" [ngClass]="{'bg-purple-200': order.refund, 'bg-white': !order.refund}">
+  <div class="flex lg:flex-row flex-col shadow-lg">
     <!-- left section -->
     <div class="w-full lg:w-3/5 min-h-screen shadow-lg">
       <!-- header -->
@@ -124,7 +124,7 @@
       <!-- end total -->
 
       <!-- buttons -->
-      <div class="mt-20" *ngIf="!order.refund">
+      <div class="mt-10 grid grid-cols-2" *ngIf="!order.refund">
         <div class="px-5 mt-5">
           <div class="px-4 py-4 rounded-md shadow-lg text-center bg-green-500 text-white font-semibold cursor-pointer" (click)="pay('cash');">
             Pay with Cash
@@ -156,7 +156,7 @@
           </div>
         </div>
       </div>
-      <div class="mt-20" *ngIf="order.refund">
+      <div class="mt-10 grid grid-cols-1" *ngIf="order.refund">
         <div class="px-5 mt-5">
           <div class="px-4 py-4 rounded-md shadow-lg text-center bg-purple-500 text-white font-semibold cursor-pointer" (click)="pay('cash');">
             Refund with Cash
