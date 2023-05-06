@@ -174,7 +174,8 @@ export class AppComponent {
         window.scan_qrcode_callback = (data) => {
           this.zone.run(() => {
             if(data) {
-              const preorder = this.preorders?.find(p => p.uid == data);
+              const now = new Date().toISOString();
+              const preorder = this.preorders?.find(p => p.uid == data && (!p.period_start || p.period_start <= now) && (!p.period_end || p.period_end >= now));
               if(preorder) {
                 if(preorder.used + this.order.total <= preorder.max) {
                   this.order.payment_infos = data;
@@ -190,7 +191,11 @@ export class AppComponent {
               } else {
                 this.sound.bip_error();
                 this.flash('red');
-                this.pay_error = "Preorder not found!";
+                if(this.preorders?.find(p => p.uid == data)) {
+                  this.pay_error = "Preorder not valid for this period!";
+                } else {
+                  this.pay_error = "Preorder not found!";
+                }
                 return;
               }
             }
