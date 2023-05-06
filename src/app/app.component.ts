@@ -130,6 +130,11 @@ export class AppComponent {
       this.flash('red');
       return;
     }
+    if(this.order.total == 0 && method != 'free') {
+      this.sound.bip_error();
+      this.flash('red');
+      return;
+    }
     if(method=="card" && !this.card_ready) {
       alert("Terminal not avaliable!");
       return;
