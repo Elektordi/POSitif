@@ -131,7 +131,7 @@
           </div>
         </div>
         <div class="px-5 mt-5">
-          <div class="px-4 py-4 rounded-md shadow-lg text-center bg-green-500 text-white font-semibold cursor-pointer" (click)="pay('card');">
+          <div class="px-4 py-4 rounded-md shadow-lg text-center text-white font-semibold cursor-pointer" (click)="pay('card');" [ngClass]="{'bg-green-500': card_ready, 'bg-gray-300': !card_ready}">
             Pay with Card
           </div>
         </div>
@@ -214,8 +214,8 @@
           </div>
         </div>
         <div class="bg-gray-50 px-6 py-3 flex flex-row-reverse">
-          <span class="inline-flex w-auto justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 ml-3 cursor-pointer" *ngIf="modal != 'card'" (click)="pay_confirm(modal!);">Confirm</span>
-          <span class="mt-0 inline-flex w-auto justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 cursor-pointer" (click)="pay_cancel(modal!);">Cancel</span>
+          <span class="inline-flex w-auto justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm ml-3 cursor-pointer" *ngIf="modal != 'card'" (click)="pay_confirm(modal!);">Confirm</span>
+          <span class="mt-0 inline-flex w-auto justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 cursor-pointer" (click)="pay_cancel(modal!);">Cancel</span>
         </div>
       </div>
     </div>
@@ -258,7 +258,7 @@
           </div>
         </div>
         <div class="bg-gray-50 px-6 py-3 flex flex-row-reverse">
-          <span class="mt-0 inline-flex w-auto justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 cursor-pointer" (click)="last_order=undefined;">Close</span>
+          <span class="mt-0 inline-flex w-auto justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 cursor-pointer" (click)="last_order=undefined;">Close</span>
         </div>
       </div>
     </div>

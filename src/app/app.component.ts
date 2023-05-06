@@ -22,6 +22,7 @@ export class AppComponent {
   order: Order;
   last_order?: Order;
   pay_error?: string;
+  card_ready: boolean = false;
 
   @ViewChild('keypad')
   view_keypad!: KeypadComponent;
@@ -74,10 +75,13 @@ export class AppComponent {
     this.terminal = this.backend.get_terminal_id();
     this.sync_now();
 
-    window.stripe_get_token = () => {
-      this.backend.fetch_stripe_token().then(r => window.app.pushToken(r)).catch(e => { alert(e); window.app.pushToken("ERROR"); });
+    if(window.app) {
+      window.stripe_get_token = () => {
+        this.backend.fetch_stripe_token().then(r => window.app.pushToken(r)).catch(e => { alert(e); window.app.pushToken("ERROR"); });
+        this.card_ready = true; // TODO: Move to real check in timer
+      }
+      this.backend.fetch_stripe_config().then(data => window.app.initStripe(data.stripe_location, "stripe_get_token"));
     }
-    this.backend.fetch_stripe_config().then(data => window.app.initStripe(data.stripe_location, "stripe_get_token"));
   }
 
   select_category(category?: Category) {
@@ -124,6 +128,10 @@ export class AppComponent {
     if(this.order.lines.length == 0) {
       this.sound.bip_error();
       this.flash('red');
+      return;
+    }
+    if(method=="card" && !this.card_ready) {
+      alert("Terminal not avaliable!");
       return;
     }
     this.order.payment_method = method;
