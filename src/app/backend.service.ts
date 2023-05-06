@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
-import { Category, Setup, Config, StripeConfig, Order, SyncStatus } from './types';
+import { Category, Setup, Config, StripeConfig, Order, SyncStatus, Preorder } from './types';
 
 @Injectable({
   providedIn: 'root'
@@ -75,6 +75,25 @@ export class BackendService {
     return new Promise((resolve, reject) => {
       if(!this.setup.backend_url) return reject("Backend url missing.");
       this.http.get<Strapi>(`${this.setup.backend_url}/api/categories?filters[store][id][$eq]=${this.setup.store}&populate[]=products&populate[]=products.photo`, this.httpOptions())
+        .pipe(catchError(err => this.handleError(err)))
+        .subscribe((data) => { this.last_call_ok = true; this.update_sync_state(); resolve(data.data); })
+    });
+  }
+
+  fetch_preorders(): Promise<Preorder[]> {
+    return new Promise((resolve, reject) => {
+      if(!this.setup.backend_url) return reject("Backend url missing.");
+      this.http.get<Strapi>(`${this.setup.backend_url}/api/preorders?filters[store][id][$eq]=${this.setup.store}`, this.httpOptions())
+        .pipe(catchError(err => this.handleError(err)))
+        .subscribe((data) => { this.last_call_ok = true; this.update_sync_state(); resolve(data.data); })
+    });
+  }
+  
+  update_preorder_used(preorder: Preorder, used: number): Promise<Preorder> {
+    return new Promise((resolve, reject) => {
+      if(!this.setup.backend_url) return reject("Backend url missing.");
+      var data = {data: {used: used}};
+      this.http.put<Strapi>(`${this.setup.backend_url}/api/preorders/${preorder.id}`, data, this.httpOptions())
         .pipe(catchError(err => this.handleError(err)))
         .subscribe((data) => { this.last_call_ok = true; this.update_sync_state(); resolve(data.data); })
     });

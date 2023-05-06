@@ -58,3 +58,14 @@ export enum SyncStatus {
   WARNING = 2, // Orders buffer NOT empty OR last downlink KO
   ERROR = 3, // Orders buffer NOT empty and last downlink KO
 }
+
+export interface Preorder {
+  id: number;
+  display_name: string;
+  uid: string;
+  period_start: string;
+  period_end: string;
+  max: number;
+  used: number;
+}
+

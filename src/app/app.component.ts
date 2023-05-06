@@ -2,7 +2,7 @@ import { Component, ViewChild, ElementRef, NgZone } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 import { BackendService } from './backend.service';
 import { SoundService } from './sound.service';
-import { Category, Product, Config, Order, OrderLine, SyncStatus } from './types';
+import { Category, Product, Config, Order, OrderLine, SyncStatus, Preorder } from './types';
 import { KeypadComponent } from './keypad/keypad.component';
 
 @Component({
@@ -23,6 +23,7 @@ export class AppComponent {
   last_order?: Order;
   pay_error?: string;
   card_ready: boolean = false;
+  preorders?: Preorder[];
 
   @ViewChild('keypad')
   view_keypad!: KeypadComponent;
@@ -67,6 +68,9 @@ export class AppComponent {
       this.categories_list = data.sort((a,b) => a.display_order - b.display_order);
       this.categories_list.forEach(x => x.products.sort((a,b) => a.display_order - b.display_order));
       if(!this.active_category) this.select_category(this.categories_list[0]);
+    })
+    this.backend.fetch_preorders().then(data => {
+      this.preorders = data;
     })
   }
 
@@ -166,6 +170,38 @@ export class AppComponent {
         this.pay_error = "Cannot pay by card if total is less than 5€!";
       }
     }
+    if(method == "preorder") {
+        window.scan_qrcode_callback = (data) => {
+          this.zone.run(() => {
+            if(data) {
+              const preorder = this.preorders?.find(p => p.uid == data);
+              if(preorder) {
+                if(preorder.used + this.order.total <= preorder.max) {
+                  this.order.payment_infos = data;
+                  preorder.used += this.order.total;
+                  this.pay_confirm("preorder");
+                  this.backend.update_preorder_used(preorder, preorder.used);
+                } else {
+                  this.sound.bip_error();
+                  this.flash('red');
+                  this.pay_error = `Not enough money on preorder for ${this.order.total}€ order. (${preorder.max}€ paid, ${preorder.used}€ used, ${preorder.max-preorder.used}€ remains)`;
+                  return;
+                }
+              } else {
+                this.sound.bip_error();
+                this.flash('red');
+                this.pay_error = "Preorder not found!";
+                return;
+              }
+            }
+          });
+        }
+        if(window.app) {
+          window.app.scanQrCode("scan_qrcode_callback")
+        } else {
+          window.scan_qrcode_callback(prompt("No integrated scanner, please enter preorder uid:") || "")
+        }
+    }
   }
 
   pay_confirm(method: string) {
@@ -223,6 +259,7 @@ declare global {
     app: StripeWebViewApp;
     stripe_get_token(): void;
     stripe_payment_callback(uid: string, success: boolean, data: string): void;
+    scan_qrcode_callback(data: string): void;
   }
 
   interface StripeWebViewApp {
