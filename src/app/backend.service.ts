@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
-import { Category, Setup, Config, StripeConfig, Order, SyncStatus, Preorder } from './types';
+import { Category, Setup, Config, StripeConfig, Order, SyncStatus, Preorder, Ticket } from './types';
 
 @Injectable({
   providedIn: 'root'
@@ -133,6 +133,14 @@ export class BackendService {
     this.flush_buffers();
   }
 
+  push_ticket(ticket: Ticket) {
+    console.log(ticket);
+    var data = {data: ticket};
+    this.http.post<Strapi>(`${this.setup.backend_url}/api/tickets`, data, this.httpOptions())
+      .pipe(catchError(err => this.handleError(err)))
+      .subscribe((data) => {})
+  }
+
   flush_buffers() {
     localStorage.setItem("orders_buffer", JSON.stringify(this.orders_buffer));
     localStorage.setItem("last_order", JSON.stringify(this.last_order));
@@ -141,7 +149,7 @@ export class BackendService {
     var data = {data: this.orders_buffer[0]};
     this.http.post<Strapi>(`${this.setup.backend_url}/api/orders`, data, this.httpOptions())
       .pipe(catchError(err => this.handleError(err)))
-      .subscribe((data) => {console.log(data); this.last_call_ok = true; this.orders_buffer.shift(); this.flush_buffers();})
+      .subscribe((data) => {this.last_call_ok = true; this.orders_buffer.shift(); this.flush_buffers();})
   }
   
   update_sync_state() {

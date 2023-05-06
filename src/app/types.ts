@@ -59,6 +59,12 @@ export enum SyncStatus {
   ERROR = 3, // Orders buffer NOT empty and last downlink KO
 }
 
+export interface Ticket {
+  contents: string;
+  order: Order;
+  type: string;
+}
+
 export interface Preorder {
   id: number;
   display_name: string;

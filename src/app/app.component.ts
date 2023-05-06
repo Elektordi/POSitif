@@ -256,6 +256,19 @@ export class AppComponent {
     this.last_order = this.backend.get_last_order();
   }
 
+  print_order(order: Order) {
+    const datetime = new Date(order.payment_timestamp!!).toLocaleString();
+    const refund = order.refund ? -1 : 1;
+    const lines = order.lines.map(l => `- ${l.label}  ${l.price*refund}€`+(l.qty>1?`\n   *${l.qty} = ${l.qty*l.price*refund}€`:"")).join("\n")
+    this.backend.push_ticket({
+      contents: `Ticket #${order.uid}\n${datetime}\n\n${lines}\n\nTotal: ${order.total*refund}€\n${order.refund?"Refunded":"Paid"} with ${order.payment_method}`,
+      order: order,
+      type: "payment"
+    });
+    this.sound.bip_success();
+    this.flash('green');
+  }
+
 }
 
 
