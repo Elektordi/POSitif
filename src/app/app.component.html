@@ -26,7 +26,7 @@
                               'bg-green-500': backend.sync == SyncStatus.OK,
                               'bg-orange-500': backend.sync == SyncStatus.WARNING,
                               'bg-red-500': backend.sync == SyncStatus.ERROR}"
-                  (click)="backend.sync_now()">
+                  (click)="sync_now()">
               <div class="absolute w-4 h-4 rounded-full animate-ping bg-gray-200" *ngIf="backend.syncing"></div>
             </div>
         </div>
@@ -36,7 +36,7 @@
       <div class="mt-5 flex flex-row px-5" *ngIf="categories_list && categories_list.length > 1">
         <div *ngFor="let category of categories_list">
           <span   class="px-5 py-1 rounded-2xl text-sm font-semibold mr-4"
-                  [ngClass]="{'bg-cyan-500 text-white': category == active_category, 'cursor-pointer': category != active_category}"
+                  [ngClass]="{'bg-cyan-500 text-white': category.id == active_category?.id, 'cursor-pointer': category.id != active_category?.id}"
                   (click)="select_category(category)">
             {{ category.name }}
           </span>

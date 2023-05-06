@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { interval, Subscription, Observable, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 import { Category, Setup, Config, StripeConfig, Order, SyncStatus } from './types';
 
@@ -14,7 +14,6 @@ export class BackendService {
   last_call_ok: boolean;
   orders_buffer: Order[];
   last_order: Order;
-  timer: Subscription;
 
   constructor(private http: HttpClient) {
     this.sync = SyncStatus.DEFAULT;
@@ -31,7 +30,6 @@ export class BackendService {
     if(stored) this.last_order = JSON.parse(stored);
 
     this.update_sync_state();
-    this.timer = interval(10000).subscribe(val => this.sync_now());
   }
 
   httpOptions() {
@@ -139,10 +137,9 @@ export class BackendService {
     this.sync = SyncStatus.OK;
   }
 
-  sync_now() {
+  sync_orders() {
     this.syncing = true;
     this.flush_buffers();
-    // TODO: Update categories from backend
     (async () => { 
       await new Promise(f => setTimeout(f, 1000));
       this.syncing = false;

@@ -1,4 +1,5 @@
 import { Component, ViewChild, ElementRef, NgZone } from '@angular/core';
+import { interval, Subscription } from 'rxjs';
 import { BackendService } from './backend.service';
 import { SoundService } from './sound.service';
 import { Category, Product, Config, Order, OrderLine, SyncStatus } from './types';
@@ -10,6 +11,7 @@ import { KeypadComponent } from './keypad/keypad.component';
   styleUrls: ['./app.component.less']
 })
 export class AppComponent {
+  update_sub?: Subscription;
   crash?: string;
   modal?: string;
   flash_color?: string;
@@ -49,16 +51,28 @@ export class AppComponent {
       return;
     }
     this.pos_init();
+    this.update_sub = interval(60000).subscribe(_ => {
+      this.sync_now();
+    });
+  }
+
+  ngOnDestroy() {
+    this.update_sub?.unsubscribe();
+  }
+
+  sync_now() {
+    this.backend.sync_orders();
+    this.backend.fetch_categories().then(data => {
+      this.categories_list = data.sort((a,b) => a.display_order - b.display_order);
+      this.categories_list.forEach(x => x.products.sort((a,b) => a.display_order - b.display_order));
+      if(!this.active_category) this.select_category(this.categories_list[0]);
+    })
   }
 
   pos_init() {
     this.backend.fetch_config().then(data => this.config = data, err => alert(err));
     this.terminal = this.backend.get_terminal_id();
-    this.backend.fetch_categories().then(data => {
-      this.categories_list = data.sort((a,b) => a.display_order - b.display_order);
-      this.categories_list.forEach(x => x.products.sort((a,b) => a.display_order - b.display_order));
-      this.select_category(this.categories_list[0]);
-    });
+    this.sync_now();
 
     window.stripe_get_token = () => {
       this.backend.fetch_stripe_token().then(r => window.app.pushToken(r)).catch(e => { alert(e); window.app.pushToken("ERROR"); });
