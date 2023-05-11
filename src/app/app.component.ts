@@ -49,7 +49,7 @@ export class AppComponent {
     }
 
     if(!this.backend.setup.backend_url) {
-      this.crash = "Missing POSitif config!";
+      this.crash = $localize`Missing POSitif config!`;
       return;
     }
     this.pos_init();
@@ -140,7 +140,7 @@ export class AppComponent {
       return;
     }
     if(method=="card" && !this.card_ready) {
-      alert("Terminal not avaliable!");
+      alert($localize`Terminal not avaliable!`);
       return;
     }
     this.order.payment_method = method;
@@ -167,7 +167,7 @@ export class AppComponent {
         }
         window.app.startPayment(Math.trunc(this.order.total*100), this.order.uid, "stripe_payment_callback")
       } else {
-        this.pay_error = "Cannot pay by card if total is less than 5€!";
+        this.pay_error = $localize`Cannot pay by card if total is less than 5€!`;
       }
     }
     if(method == "preorder") {
@@ -185,16 +185,16 @@ export class AppComponent {
                 } else {
                   this.sound.bip_error();
                   this.flash('red');
-                  this.pay_error = `Not enough money on preorder for ${this.order.total}€ order. (${preorder.max}€ paid, ${preorder.used}€ used, ${preorder.max-preorder.used}€ remains)`;
+                  this.pay_error = $localize`Not enough money on preorder for ${this.order.total}€ order. (${preorder.max}€ paid, ${preorder.used}€ used, ${preorder.max-preorder.used}€ remains)`;
                   return;
                 }
               } else {
                 this.sound.bip_error();
                 this.flash('red');
                 if(this.preorders?.find(p => p.uid == data)) {
-                  this.pay_error = "Preorder not valid for this period!";
+                  this.pay_error = $localize`Preorder not valid for this period!`;
                 } else {
-                  this.pay_error = "Preorder not found!";
+                  this.pay_error = $localize`Preorder not found!`;
                 }
                 return;
               }
@@ -204,7 +204,7 @@ export class AppComponent {
         if(window.app) {
           window.app.scanQrCode("scan_qrcode_callback")
         } else {
-          window.scan_qrcode_callback(prompt("No integrated scanner, please enter preorder uid:") || "")
+          window.scan_qrcode_callback(prompt($localize`No integrated scanner, please enter preorder uid:`) || "")
         }
     }
   }
@@ -214,7 +214,7 @@ export class AppComponent {
       if(this.view_keypad.value < this.order.total) {
         this.sound.bip_error();
         this.flash('red');
-        this.pay_error = "Not enough cash for payment!";
+        this.pay_error = $localize`Not enough cash for payment!`;
         return;
       }
       this.order.payment_infos = `${this.view_keypad.value}€ - ${this.order.total}€ = ${this.view_keypad.value - this.order.total}€`;
@@ -222,7 +222,7 @@ export class AppComponent {
       if(!this.view_details.nativeElement.value) {
         this.sound.bip_error();
         this.flash('red');
-        this.pay_error = "Missing reference!";
+        this.pay_error = $localize`Missing reference!`;
         return;
       }
       this.order.payment_infos = this.view_details.nativeElement.value;
@@ -261,7 +261,7 @@ export class AppComponent {
     const refund = order.refund ? -1 : 1;
     const lines = order.lines.map(l => `- ${l.label}  ${l.price*refund}€`+(l.qty>1?`\n   *${l.qty} = ${l.qty*l.price*refund}€`:"")).join("\n")
     this.backend.push_ticket({
-      contents: `Ticket #${order.uid}\n${datetime}\n\n${lines}\n\nTotal: ${order.total*refund}€\n${order.refund?"Refunded":"Paid"} with ${order.payment_method}`,
+      contents: $localize`Ticket #${order.uid}\n${datetime}\n\n${lines}\n\nTotal: ${order.total*refund}€\n${order.refund?"Refunded":"Paid"} with ${order.payment_method}`,
       order: order,
       type: "payment"
     });
