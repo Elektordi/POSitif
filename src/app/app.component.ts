@@ -198,6 +198,8 @@ export class AppComponent {
                 }
                 return;
               }
+            } else {
+              this.modal = undefined;
             }
           });
         }
