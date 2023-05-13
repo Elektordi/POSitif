@@ -1,11 +1,10 @@
 import { io, Socket } from "socket.io-client";
-import escpos from "escpos";
-// @ts-ignore
-import USB from "escpos-usb";
+import { Printer } from "@node-escpos/core";
+import USB from "@node-escpos/usb-adapter";
 
 
 const device = new USB(0x04b8, 0x0202);
-const printer = new escpos.Printer(device, { encoding: '858' });
+const printer = new Printer(device, { encoding: 'cp858' });
 
 const SERVER_URL = process.env.SERVER_URL || "ws://127.0.0.1:1337";
 
@@ -32,10 +31,10 @@ socket.on("ticket:create", (data) => {
     if(error) {
       console.log(error);
     } else {
-      printer.font('B');
+      printer.setCharacterCodeTable(19);
+      printer.font('A');
       printer.style('NORMAL');
       printer.align('LT');
-      printer.size(1, 1);
       text.split(/\n/).forEach( (e: string) => {
         printer.text(e);
       });
