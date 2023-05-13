@@ -14,6 +14,7 @@
     "@strapi/plugin-users-permissions": "4.8.2",
     "@strapi/strapi": "4.8.2",
     "better-sqlite3": "8.0.1",
+    "mysql": "^2.18.1",
     "strapi-plugin-io": "^1.1.4",
     "strapi-plugin-transformer": "^3.0.1",
     "stripe": "^12.2.0"
