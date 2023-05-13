@@ -41,6 +41,12 @@
       "type": "boolean",
       "default": true,
       "required": true
+    },
+    "ticket_header": {
+      "type": "text"
+    },
+    "ticket_footer": {
+      "type": "text"
     }
   }
 }

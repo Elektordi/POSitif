@@ -43,6 +43,7 @@ export interface OrderLine {
 }
 
 export interface Order {
+  id?: number;
   lines: OrderLine[];
   total: number;
   refund: boolean;
@@ -60,8 +61,8 @@ export enum SyncStatus {
 }
 
 export interface Ticket {
-  contents: string;
-  order: Order;
+  contents?: string;
+  order?: Order;
   type: string;
 }
 

@@ -149,7 +149,12 @@ export class BackendService {
     var data = {data: this.orders_buffer[0]};
     this.http.post<Strapi>(`${this.setup.backend_url}/api/orders`, data, this.httpOptions())
       .pipe(catchError(err => this.handleError(err)))
-      .subscribe((data) => {this.last_call_ok = true; this.orders_buffer.shift(); this.flush_buffers();})
+      .subscribe((data) => {
+        this.last_call_ok = true;
+        this.orders_buffer.shift();
+        this.flush_buffers();
+        if(data.data.payment_infos == this.last_order.payment_infos) this.last_order.id = data.data.id;
+    })
   }
   
   update_sync_state() {

@@ -14,7 +14,7 @@
   "attributes": {
     "contents": {
       "type": "text",
-      "required": true
+      "required": false
     },
     "order": {
       "type": "relation",
