@@ -6,10 +6,11 @@ RUN npm install
 
 COPY *.json *.js ./
 COPY src src/
-RUN npm run build --prod
+ARG LANG=en
+RUN echo "Building '${LANG}' version:" ; node_modules/.bin/ng build -c production,${LANG}
 
 
 FROM nginx:1.24-bullseye
 
-COPY --from=builder /srv/app/dist/positif/ /usr/share/nginx/html/
+COPY --from=builder /srv/app/dist/positif/* /usr/share/nginx/html
 
