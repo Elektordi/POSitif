@@ -41,13 +41,6 @@
             {{ category.name }}
           </span>
         </div>
-        <div class="self-end">
-          <span   class="px-5 py-1 rounded-2xl text-sm font-semibold mr-4"
-                  [ngClass]="{'bg-cyan-500 text-white': active_category == null, 'cursor-pointer': active_category != null}"
-                  (click)="select_category(undefined)">
-            +
-          </span>
-        </div>
       </div>
       <!-- end categories -->
       <!-- products -->
@@ -62,9 +55,7 @@
             <img src="{{ backend.media_url(product.photo.url) }}" class="self-end h-full object-cover rounded-md" alt="" *ngIf="product.photo">
           </div>
         </div>
-      </div>
-      <div class="grid grid-cols-1 gap-4 px-5 mt-5 overflow-y-auto h-3/4 content-start" *ngIf="active_category == null">
-        <div class="px-3 py-3 flex flex-row border border-gray-200 rounded-md h-32 justify-between">
+        <div class="px-3 py-3 flex flex-row col-span-3 border border-gray-200 rounded-md h-32 justify-between" *ngIf="active_category?.name == '+'">
           <div class="flex flex-col grow">
             <div class="font-bold text-gray-800" i18n>Custom product</div>
             <div class="font-light">
