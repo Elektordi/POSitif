@@ -20,7 +20,13 @@
           <span class="text-xs" i18n>Store #{{ config.ref }} / Terminal #{{ terminal }}</span>
         </div>
         <div class="flex self-start items-center text-sm">
-            <div class="font-light text-gray-500">Sync: </div>
+            <div class="font-light text-gray-500">Card: </div>
+            <div  class="ml-2 shadow-sm w-4 h-4 rounded-full cursor-pointer"
+                  [ngClass]="{'bg-green-500': card_ready,
+                              'bg-red-500': !card_ready}"
+                  (click)="terminal_init()">
+            </div>
+            <div class="ml-4 font-light text-gray-500">Sync: </div>
             <div  class="ml-2 shadow-sm w-4 h-4 rounded-full cursor-pointer"
                   [ngClass]="{'bg-gray-500': backend.sync == SyncStatus.DEFAULT,
                               'bg-green-500': backend.sync == SyncStatus.OK,

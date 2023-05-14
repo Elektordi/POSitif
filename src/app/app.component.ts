@@ -12,6 +12,7 @@ import { KeypadComponent } from './keypad/keypad.component';
 })
 export class AppComponent {
   update_sub?: Subscription;
+  terminal_sub?: Subscription;
   crash?: string;
   modal?: string;
   flash_color?: string;
@@ -56,10 +57,16 @@ export class AppComponent {
     this.update_sub = interval(60000).subscribe(_ => {
       this.sync_now();
     });
+    if(window.app) {
+      this.terminal_sub = interval(1000).subscribe(_ => {
+        this.card_ready = window.app.isStripeReady()
+      });
+    }
   }
 
   ngOnDestroy() {
     this.update_sub?.unsubscribe();
+    this.terminal_sub?.unsubscribe();
   }
 
   sync_now() {
@@ -78,11 +85,13 @@ export class AppComponent {
     this.backend.fetch_config().then(data => this.config = data, err => alert(err));
     this.terminal = this.backend.get_terminal_id();
     this.sync_now();
+    this.terminal_init();
+  }
 
+  terminal_init() {
     if(window.app) {
       window.stripe_get_token = () => {
         this.backend.fetch_stripe_token().then(r => window.app.pushToken(r)).catch(e => { alert(e); window.app.pushToken("ERROR"); });
-        this.card_ready = true; // TODO: Move to real check in timer
       }
       this.backend.fetch_stripe_config().then(data => window.app.initStripe(data.stripe_location, "stripe_get_token"));
     }
@@ -281,6 +290,7 @@ declare global {
   interface StripeWebViewApp {
     makeToast(message: string, long: boolean): void;
     initStripe(location: string, token_js_function: string): void;
+    isStripeReady(): boolean;
     pushToken(token: string): void;
     startPayment(amount: number, uid: string, callback_js_function: string): void;
     cancelPayment(): void;
