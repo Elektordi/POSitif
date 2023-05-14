@@ -7,7 +7,7 @@ COPY ./package.json ./package-lock.json ./
 ENV PATH /srv/node_modules/.bin:$PATH
 RUN npm install --production
 WORKDIR /srv/app
-COPY *.json config database public src .
+COPY . .
 RUN npm run build
 
 

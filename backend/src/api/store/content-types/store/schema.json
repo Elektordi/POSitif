@@ -42,6 +42,11 @@
       "default": true,
       "required": true
     },
+    "enable_preorder": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    },
     "ticket_header": {
       "type": "text"
     },
