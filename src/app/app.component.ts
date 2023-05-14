@@ -149,7 +149,8 @@ export class AppComponent {
       return;
     }
     if(method=="card" && !this.card_ready) {
-      alert($localize`Terminal not avaliable!`);
+      this.modal = "error";
+      this.pay_error = $localize`Terminal not avaliable!`;
       return;
     }
     this.order.payment_method = method;
