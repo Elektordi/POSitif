@@ -111,6 +111,23 @@ export class AppComponent {
   }
 
   add_custom(label: string, price: number) {
+    if(label?.match(/^\//)) {
+      if(label == "/dump") {
+        alert(JSON.stringify(this.backend.orders_buffer));
+      } else if(label == "/shift") {
+        this.backend.orders_buffer.shift();
+        alert("OK");
+      } else if(label == "/flush") {
+        this.backend.flush_buffers();
+        alert("OK");
+      } else if(label == "/resetinstall") {
+        this.backend.set_setup({});
+        alert("OK");
+      } else {
+        alert("Unknown debug command!");
+      }
+      return;
+    }
     if(!label || !price) return;
     this.order.lines.push({label: label, qty: 1, price: price});
     this.refresh_total();
