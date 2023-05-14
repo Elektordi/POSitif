@@ -9,6 +9,15 @@ dotenv.config()
 const SERVER_URL = process.env.SERVER_URL || "http://127.0.0.1:1337";
 const SERVER_KEY = process.env.SERVER_KEY || "invalid";
 
+const method_fr: any = {
+  "cash": "espèces",
+  "card": "carte bancaire",
+  "check": "chèque",
+  "preorder": "pré-commande",
+  "free": "exonération",
+  "manual": "opérateur (manuel)"
+};
+
 const got_options = {
 	headers: {
 		Authorization: `Bearer ${SERVER_KEY}`
@@ -48,10 +57,14 @@ socket.on("ticket:create", (data) => {
       } else {
         printer.setCharacterCodeTable(19);
         printer.font('A');
+        printer.align('CT');
+        printer.style('B');
+        printer.size(2,2);
+        printer.text(order.store.title);
+        printer.size(1,1);
         printer.style('NORMAL');
 
         if(order.store.ticket_header) {
-          printer.align('CT');
           order.store.ticket_header.split(/\n/).forEach( (l: string) => {
             printer.text(l);
           });
@@ -70,8 +83,11 @@ socket.on("ticket:create", (data) => {
           if(l.qty > 1) printer.text(`    *${l.qty} = ${l.qty*l.price*refund}€`);
         });
         printer.newLine();
+        printer.style('B');
         printer.text(`Total: ${order.total*refund}€`)
-        printer.text(`${order.refund?"Refunded":"Paid"} with ${order.payment_method}`)
+        printer.style('NORMAL');
+        //printer.text(`${order.refund?"Refunded":"Paid"} with ${order.payment_method}`)
+        printer.text(`${order.refund?"Remboursement":"Paiement"} par ${method_fr[order.payment_method]}`)
         if(order.payment_infos) printer.text(`(${order.payment_infos})`)
         printer.newLine();
 

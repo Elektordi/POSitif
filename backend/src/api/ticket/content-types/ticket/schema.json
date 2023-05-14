@@ -22,10 +22,6 @@
       "target": "api::order.order",
       "inversedBy": "tickets"
     },
-    "printed": {
-      "type": "boolean",
-      "default": false
-    },
     "type": {
       "type": "enumeration",
       "enum": [
