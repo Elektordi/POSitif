@@ -1,0 +1,18 @@
+[Unit]
+Description=POsitif Tickets Printer
+After=network-online.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+Restart=on-failure
+TimeoutStopSec=10
+
+Environment=PATH=/home/pi/bin:/bin
+WorkingDirectory=/home/pi/POSitif/tickets_printer
+ExecStart=/usr/bin/env npm run start
+
+[Install]
+WantedBy=multi-user.target
+
