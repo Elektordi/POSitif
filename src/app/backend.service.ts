@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
-import { Category, Setup, Config, StripeConfig, Order, SyncStatus, Preorder, Ticket } from './types';
+import { Category, Setup, Config, StripeConfig, Order, SyncStatus, Preorder } from './types';
 
 @Injectable({
   providedIn: 'root'
@@ -131,14 +131,6 @@ export class BackendService {
     order.lines.forEach(x => x.product = x.product?.id); order.store = 1;
     this.orders_buffer.push(order);
     this.flush_buffers();
-  }
-
-  push_ticket(ticket: Ticket) {
-    console.log(ticket);
-    var data = {data: ticket};
-    this.http.post<Strapi>(`${this.setup.backend_url}/api/tickets`, data, this.httpOptions())
-      .pipe(catchError(err => this.handleError(err)))
-      .subscribe((data) => {})
   }
 
   flush_buffers() {

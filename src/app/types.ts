@@ -12,6 +12,9 @@ export interface Config {
 //  enable_card: boolean;
 //  enable_check: boolean;
 //  enable_free: boolean;
+  ticket_header: string;
+  ticket_footer: string;
+  ticket_printer_target: string;
 }
 
 export interface StripeConfig {
@@ -58,12 +61,6 @@ export enum SyncStatus {
   OK = 1, // Orders buffer empty and last downlink ok
   WARNING = 2, // Orders buffer NOT empty OR last downlink KO
   ERROR = 3, // Orders buffer NOT empty and last downlink KO
-}
-
-export interface Ticket {
-  contents?: string;
-  order?: Order;
-  type: string;
 }
 
 export interface Preorder {

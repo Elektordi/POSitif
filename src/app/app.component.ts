@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef, NgZone } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 import { BackendService } from './backend.service';
 import { SoundService } from './sound.service';
+import { TicketService } from './ticket.service';
 import { Category, Product, Config, Order, OrderLine, SyncStatus, Preorder } from './types';
 import { KeypadComponent } from './keypad/keypad.component';
 
@@ -33,7 +34,7 @@ export class AppComponent {
 
   SyncStatus: typeof SyncStatus = SyncStatus; // For enum access
 
-  constructor(public backend: BackendService, public sound: SoundService, public zone: NgZone) {
+  constructor(public backend: BackendService, public sound: SoundService, public ticket: TicketService, public zone: NgZone) {
     this.order = {lines: [], total: 0, refund: false};
   }
 
@@ -53,7 +54,10 @@ export class AppComponent {
       this.crash = $localize`Missing POSitif config!`;
       return;
     }
-    this.pos_init();
+    this.backend.fetch_config().then(data => {
+      this.config = data;
+      this.pos_init();
+    }, err => alert(err));
     this.update_sub = interval(60000).subscribe(_ => {
       this.sync_now();
     });
@@ -82,9 +86,9 @@ export class AppComponent {
   }
 
   pos_init() {
-    this.backend.fetch_config().then(data => this.config = data, err => alert(err));
     this.terminal = this.backend.get_terminal_id();
     this.sync_now();
+    this.ticket.init_printer(this.config!);
     this.terminal_init();
   }
 
@@ -286,12 +290,10 @@ export class AppComponent {
   }
 
   print_order(order: Order) {
-    this.backend.push_ticket({
-      order: order,
-      type: "payment"
-    });
-    this.sound.bip_success();
-    this.flash('green');
+    if(this.ticket.print_order_ticket(order)) {
+      this.sound.bip_success();
+      this.flash('green');
+    }
   }
 
 }
@@ -313,5 +315,7 @@ declare global {
     startPayment(amount: number, uid: string, callback_js_function: string): void;
     cancelPayment(): void;
     scanQrCode(callback_js_function: string): void;
+    initPrinter(target: string): void;
+    printTicket(ticket: string): void;
   }
 }
