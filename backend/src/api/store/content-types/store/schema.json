@@ -52,6 +52,9 @@
     },
     "ticket_footer": {
       "type": "text"
+    },
+    "ticket_printer_target": {
+      "type": "string"
     }
   }
 }

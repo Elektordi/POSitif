@@ -1,6 +1,0 @@
-# Copy in /lib/udev/rules.d/
-# Then run: sudo udevadm control --reload
-# And then run: sudo udevadm trigger
-
-ACTION=="add", SUBSYSTEMS=="usb", ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0202", MODE="660", GROUP="plugdev"
-

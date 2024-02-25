@@ -46,12 +46,6 @@
       "repeatable": true,
       "component": "order.order-line",
       "required": true
-    },
-    "tickets": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::ticket.ticket",
-      "mappedBy": "order"
     }
   }
 }
