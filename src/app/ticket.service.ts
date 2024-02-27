@@ -27,7 +27,8 @@ export class TicketService {
     const datetime = new Date(order.payment_timestamp!).toLocaleString();
     const refund = order.refund ? -1 : 1;
 
-    var ticket = this.config!.ticket_header;
+    var ticket = "\x1bt\x00";  // Select font C
+    ticket += this.config!.ticket_header;
     ticket += "\n\n";
     ticket += $localize`Ticket #${order.uid}\n`;
     ticket += $localize`Date ${datetime}\n`;
@@ -40,8 +41,8 @@ export class TicketService {
     if(order.payment_infos) ticket += `(${order.payment_infos})\n`
     ticket += "\n";
     ticket += this.config!.ticket_footer;
-    ticket += "\n";
-    console.log(ticket);
+    ticket += "\n\x1bd\x06\x1dV\x00";  // Print and feed 6 lines, Select Cut Mode and Cut Paper
+    console.log(JSON.stringify(ticket));
     window.app.printTicket(ticket);
     return true;
   }
