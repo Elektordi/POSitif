@@ -291,7 +291,6 @@ export class AppComponent {
 
   print_order(order: Order) {
     if(this.ticket.print_order_ticket(order)) {
-      this.sound.bip_success();
       this.flash('green');
     }
   }
@@ -316,6 +315,6 @@ declare global {
     cancelPayment(): void;
     scanQrCode(callback_js_function: string): void;
     initPrinter(target: string): void;
-    printTicket(ticket: string): void;
+    printTicket(ticket: Uint8Array): void;
   }
 }

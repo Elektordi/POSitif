@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Config, Order } from './types';
+import EscPosEncoder from 'esc-pos-encoder';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TicketService {
   config?: Config;
+  encoder: EscPosEncoder;
 
   methods: any = {
     "cash": $localize`espèces`,
@@ -13,10 +15,12 @@ export class TicketService {
     "check": $localize`chèque`,
     "preorder": $localize`pré-commande`,
     "free": $localize`exonération`,
-    "manual": $localize`opérateur (manuel)`
+    "manual": $localize`opérateur / manuel`
   };
 
-  constructor() { }
+  constructor() {
+    this.encoder = new EscPosEncoder();
+  }
 
   init_printer(config: Config) {
     this.config = config;
@@ -27,23 +31,43 @@ export class TicketService {
     const datetime = new Date(order.payment_timestamp!).toLocaleString();
     const refund = order.refund ? -1 : 1;
 
-    var ticket = "\x1bt\x00";  // Select font C
-    ticket += this.config!.ticket_header;
-    ticket += "\n\n";
-    ticket += $localize`Ticket #${order.uid}\n`;
-    ticket += $localize`Date ${datetime}\n`;
+    var ticket = this.encoder.initialize();
+    ticket.codepage('cp858');
+    ticket.align('center');
+    ticket.width(2).height(2);
+    ticket.line(this.config!.title);
+    ticket.width(1).height(1);
+    ticket.line(this.config!.ticket_header);
+    ticket.align('left');
+    ticket.newline();
+    ticket.line($localize`Date ${datetime}`);
+    ticket.size('small');
+    ticket.line($localize`Ticket n°${order.uid}`);
+    ticket.size('normal');
+    ticket.newline();
     order.lines.forEach( (l: any) => {
-      ticket += `- ${l.label}  ${l.price*refund}€\n`;
-      if(l.qty > 1) ticket += `    *${l.qty} = ${l.qty*l.price*refund}€\n`;
+      ticket.line(`- ${l.label}  ${l.price*refund}€`);
+      if(l.qty > 1) ticket.line(`    *${l.qty} = ${l.qty*l.price*refund}€`);
     });
-    ticket += $localize`Total: ${order.total*refund}€\n`;
-    ticket += `${order.refund?"Remboursement":"Paiement"} par ${this.methods[order.payment_method!]}\n`;
-    if(order.payment_infos) ticket += `(${order.payment_infos})\n`
-    ticket += "\n";
-    ticket += this.config!.ticket_footer;
-    ticket += "\n\x1bd\x06\x1dV\x00";  // Print and feed 6 lines, Select Cut Mode and Cut Paper
-    console.log(JSON.stringify(ticket));
-    window.app.printTicket(ticket);
+    ticket.newline();
+    ticket.line($localize`Total: ${order.total*refund}€`);
+    ticket.newline();
+    ticket.size('small');
+    ticket.line(`${order.refund?"Remboursement":"Paiement"} par ${this.methods[order.payment_method!]}`);
+    if(order.payment_infos) ticket.line(`(${order.payment_infos})`);
+    ticket.size('normal');
+    ticket.newline();
+    ticket.align('center');
+    ticket.line(this.config!.ticket_footer);
+    ticket.newline();
+    ticket.newline();
+    ticket.newline();
+    ticket.cut();
+
+    var data = ticket.encode();
+
+    console.log(JSON.stringify(data));
+    window.app.printTicket(data);
     return true;
   }
 }
