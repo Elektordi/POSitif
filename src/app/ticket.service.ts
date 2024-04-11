@@ -32,6 +32,7 @@ export class TicketService {
     const refund = order.refund ? -1 : 1;
 
     var ticket = this.encoder.initialize();
+    ticket.raw([ 0x1c, 0x2e ]); // Disable chinese characters on some printers
     ticket.codepage('cp858');
     ticket.align('center');
     ticket.width(2).height(2);
@@ -59,6 +60,7 @@ export class TicketService {
     ticket.newline();
     ticket.align('center');
     ticket.line(this.config!.ticket_footer);
+    ticket.newline();
     ticket.newline();
     ticket.newline();
     ticket.newline();
