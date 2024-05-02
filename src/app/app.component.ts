@@ -101,6 +101,14 @@ export class AppComponent {
     }
   }
 
+  terminal_toggle() {
+    if(!this.card_ready) {
+      this.terminal_init();
+    } else {
+      window.app.stopStripe();
+    }
+  }
+
   select_category(category?: Category) {
     this.active_category = category;
   }
@@ -308,7 +316,8 @@ declare global {
 
   interface StripeWebViewApp {
     makeToast(message: string, long: boolean): void;
-    initStripe(location: string, token_js_function: string): void;
+    initStripe(location: string, token_js_function: string): boolean;
+    stopStripe(): boolean;
     isStripeReady(): boolean;
     pushToken(token: string): void;
     startPayment(amount: number, uid: string, callback_js_function: string): void;
