@@ -23,6 +23,7 @@ export class AppComponent {
   active_category?: Category;
   order: Order;
   last_order?: Order;
+  order_history?: Order[];
   pay_error?: string;
   card_ready: boolean = false;
   preorders?: Preorder[];
@@ -301,6 +302,10 @@ export class AppComponent {
     if(this.ticket.print_order_ticket(order)) {
       this.flash('green');
     }
+  }
+
+  load_order_history() {
+    this.backend.fetch_orders_history().then(data => this.order_history = data);
   }
 
 }
