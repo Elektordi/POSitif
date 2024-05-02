@@ -10,12 +10,12 @@ export class TicketService {
   encoder: EscPosEncoder;
 
   methods: any = {
-    "cash": $localize`espèces`,
-    "card": $localize`carte bancaire`,
-    "check": $localize`chèque`,
-    "preorder": $localize`pré-commande`,
-    "free": $localize`exonération`,
-    "manual": $localize`opérateur / manuel`
+    "cash": $localize`cash`,
+    "card": $localize`card`,
+    "check": $localize`check`,
+    "preorder": $localize`preorder`,
+    "free": $localize`exoneration`,
+    "manual": $localize`operator / manual`
   };
 
   constructor() {
@@ -43,7 +43,7 @@ export class TicketService {
     ticket.newline();
     ticket.line($localize`Date ${datetime}`);
     ticket.size('small');
-    ticket.line($localize`Ticket n°${order.uid}`);
+    ticket.line($localize`Ticket #${order.uid}`);
     ticket.size('normal');
     ticket.newline();
     order.lines.forEach( (l: any) => {
@@ -54,8 +54,12 @@ export class TicketService {
     ticket.line($localize`Total: ${order.total*refund}€`);
     ticket.newline();
     ticket.size('small');
-    ticket.line(`${order.refund?"Remboursement":"Paiement"} par ${this.methods[order.payment_method!]}`);
-    if(order.payment_infos) ticket.line(`(${order.payment_infos})`);
+    if(order.refund)
+        ticket.line($localize`Refund by ${this.methods[order.payment_method!]}`);
+    else
+        ticket.line($localize`Paid by ${this.methods[order.payment_method!]}`);
+    if(order.payment_infos)
+        ticket.line(`(${order.payment_infos})`);
     ticket.size('normal');
     ticket.newline();
     ticket.align('center');

@@ -44,6 +44,17 @@
     "4367063185585381372": "Preorder not found!",
     "3249110298504772332": "No integrated scanner, please enter preorder uid:",
     "9101619143645684880": "Not enough cash for payment!",
-    "997115148767757023": "Missing reference!"
+    "997115148767757023": "Missing reference!",
+    "5622903135025597528": "cash",
+    "152199765950909371": "card",
+    "5760154636374011786": "check",
+    "5027787088458118289": "preorder",
+    "6411455409551692659": "exoneration",
+    "359370391808706961": "operator / manual",
+    "3202970472361838741": "Date {$PH}",
+    "1818384836456024615": "Ticket #{$PH}",
+    "6094106846903876596": "Total: {$PH}€",
+    "5457475315636017123": "Refund by {$PH}",
+    "3404923375620665385": "Paid by {$PH}"
   }
 }
