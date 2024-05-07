@@ -137,7 +137,8 @@ export class BackendService {
   push_order(order: Order) {
     this.last_order = JSON.parse(JSON.stringify(order)); // Deepcopy
     // @ts-ignore: prepare data for backend
-    order.lines.forEach(x => x.product = x.product?.id); order.store = 1;
+    order.lines.forEach(x => x.product = x.product?.id);
+    order.store = this.setup.store;
     this.orders_buffer.push(order);
     this.flush_buffers();
   }

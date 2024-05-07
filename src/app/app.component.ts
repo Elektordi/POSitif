@@ -301,6 +301,7 @@ export class AppComponent {
   print_order(order: Order) {
     if(this.ticket.print_order_ticket(order)) {
       this.flash('green');
+      this.sound.bip_success();
     }
   }
 
