@@ -1,6 +1,4 @@
-FROM node:16-alpine as build
-# Installing libvips-dev for sharp Compatibility
-RUN apk update && apk add --no-cache build-base gcc autoconf automake zlib-dev libpng-dev vips-dev && rm -rf /var/cache/apk/* > /dev/null 2>&1
+FROM node:22-alpine as build
 ARG NODE_ENV=production
 WORKDIR /srv/
 COPY ./package.json ./package-lock.json ./
@@ -11,9 +9,7 @@ COPY . .
 RUN npm run build
 
 
-FROM node:16-alpine
-# Installing libvips-dev for sharp Compatibility
-RUN apk add vips-dev && rm -rf /var/cache/apk/*
+FROM node:22-alpine
 ARG NODE_ENV=production
 WORKDIR /srv/app
 COPY --from=build /srv/node_modules ./node_modules
