@@ -1,17 +1,20 @@
-import { ActionRequest, ListActionResponse, RecordActionResponse } from 'adminjs'
+import { ResourceWithOptions, ActionRequest, PageContext, ListActionResponse, RecordActionResponse } from 'adminjs'
 import { getModelByName } from '@adminjs/prisma'
 import bcrypt from "bcryptjs"
 
-import { prisma } from "../common.ts";
+import { prisma } from "../common.ts"
 
-export const UserAdmin = {
+
+export const userAdmin: ResourceWithOptions = {
     resource: {
         model: getModelByName('User'),
         client: prisma
     },
     options: {
+        navigation: { icon: 'User' },
         actions: {
             new: {
+                isAccessible: ({ currentAdmin }) => currentAdmin?.superadmin,
                 before: async (request: ActionRequest) => {
                     if (request.payload?.password) {
                         request.payload.password = bcrypt.hashSync(request.payload.password, bcrypt.genSaltSync());
@@ -26,7 +29,8 @@ export const UserAdmin = {
                 },
             },
             edit: {
-                before: async (request: ActionRequest) => {
+                isAccessible: ({ currentAdmin, record }) => currentAdmin?.superadmin || (currentAdmin && record && currentAdmin.id === record.get("id")),
+                before: async (request: ActionRequest, context: PageContext) => {
                     // no need to hash on GET requests, we'll remove passwords there anyway
                     if (request.method === 'post') {
                         // hash only if password is present, delete otherwise
@@ -36,6 +40,7 @@ export const UserAdmin = {
                         } else {
                             delete request.payload?.password;
                         }
+                        if (!context.currentAdmin?.superadmin) delete request.payload?.superadmin;
                     }
                     return request;
                 },
@@ -52,6 +57,9 @@ export const UserAdmin = {
                     return response;
                 },
             },
+            delete: {
+                isAccessible: ({ currentAdmin }) => currentAdmin?.superadmin,
+            }
         },
         properties: {
             password: {

@@ -2,11 +2,13 @@ import express from 'express'
 import AdminJS from 'adminjs'
 import AdminJSExpress from '@adminjs/express'
 import { Database, Resource } from '@adminjs/prisma'
-import session from 'express-session';
-import createMemoryStore from 'memorystore';
+import session from 'express-session'
+import createMemoryStore from 'memorystore'
 
-import { prisma } from "./common.ts";
-import { UserAdmin, authenticate } from "./admin/user.ts";
+import { prisma } from "./common.ts"
+import { componentLoader } from "./admin/components/index.ts"
+import { userAdmin, authenticate } from "./admin/user.ts"
+import { shopAdmin } from "./admin/shop.ts"
 
 
 const MemoryStore = createMemoryStore(session);
@@ -20,9 +22,12 @@ const run = async () => {
 
     const admin = new AdminJS({
         resources: [
-            UserAdmin
+            userAdmin,
+            shopAdmin
         ],
+        componentLoader: componentLoader
     })
+    admin.watch()
 
     const router = AdminJSExpress.buildAuthenticatedRouter(admin,
         {
@@ -42,7 +47,7 @@ const run = async () => {
             },
             name: 'adminjs',
         })
-
+    //const router = AdminJSExpress.buildRouter(admin)
     app.use(admin.options.rootPath, router)
     app.get('/', (req, res) => {
         res.redirect(admin.options.rootPath)
