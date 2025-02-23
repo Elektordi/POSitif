@@ -1,6 +1,6 @@
 import { ActionRequest, ListActionResponse, RecordActionResponse } from 'adminjs'
 import { getModelByName } from '@adminjs/prisma'
-import { hash } from "crypto";
+import bcrypt from "bcryptjs"
 
 import { prisma } from "../common.ts";
 
@@ -14,7 +14,7 @@ export const UserAdmin = {
             new: {
                 before: async (request: ActionRequest) => {
                     if (request.payload?.password) {
-                        request.payload.password = hash("sha512", request.payload.password, "base64");
+                        request.payload.password = bcrypt.hashSync(request.payload.password, bcrypt.genSaltSync());
                     }
                     return request;
                 },
@@ -32,7 +32,7 @@ export const UserAdmin = {
                         // hash only if password is present, delete otherwise
                         // so we don't overwrite it
                         if (request.payload?.password) {
-                            request.payload.password = hash("sha512", request.payload.password, "base64");
+                            request.payload.password = bcrypt.hashSync(request.payload.password, bcrypt.genSaltSync());
                         } else {
                             delete request.payload?.password;
                         }
@@ -73,7 +73,7 @@ export const authenticate = async (email: string, password: string) => {
             email: email,
         },
     })
-    if (hash("sha512", password, "base64") === user?.password) {
+    if (bcrypt.compareSync(password, user?.password || "")) {
         return Promise.resolve(user)
     }
     return null

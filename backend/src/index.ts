@@ -28,14 +28,14 @@ const run = async () => {
         {
             authenticate,
             cookieName: 'adminjs',
-            cookiePassword: 'sessionsecret',
+            cookiePassword: process.env.COOKIE_SECRET || 'nosecret',
         },
         null,
         {
             store: new MemoryStore({ checkPeriod: 86400000 }),  // 24h
             resave: true,
             saveUninitialized: true,
-            secret: 'sessionsecret',
+            secret: process.env.SESSION_SECRET || 'nosecret',
             cookie: {
                 httpOnly: process.env.NODE_ENV === 'production',
                 secure: process.env.NODE_ENV === 'production',

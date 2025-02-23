@@ -1,4 +1,5 @@
-import { randomBytes, hash } from "crypto";
+import { randomBytes } from "crypto";
+import bcrypt from "bcryptjs";
 
 import { prisma } from "./common.ts";
 
@@ -13,7 +14,8 @@ async function main() {
     const user = await prisma.user.create({
         data: {
             email: 'admin@localhost',
-            password: hash("sha512", password, "base64"),
+            password: bcrypt.hashSync(password, bcrypt.genSaltSync()),
+            superadmin: true
         },
     })
     console.log(user)
