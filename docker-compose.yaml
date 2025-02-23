@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  backend:
+    build:
+      context: backend
+    volumes:
+      - ./dist/data.db:/srv/app/data.db
+    ports:
+      - 1337:1337
+
+  frontend:
+    build:
+      context: .
+    ports:
+      - 8000:8000
+
