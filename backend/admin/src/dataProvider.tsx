@@ -1,14 +1,5 @@
 import { DataProvider, GetListResult, RaRecord } from "react-admin";
-import { createTRPCProxyClient, httpLink } from '@trpc/client';
-import type { AppRouter } from '../../src/trpc';
-
-const trpc = createTRPCProxyClient<AppRouter>({
-    links: [
-        httpLink({
-            url: '/trpc/',
-        }),
-    ],
-});
+import { trpc } from "./common";
 
 type Record = RaRecord
 
