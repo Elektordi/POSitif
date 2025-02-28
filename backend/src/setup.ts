@@ -1,7 +1,7 @@
 import { randomBytes } from "crypto";
 import bcrypt from "bcryptjs";
 
-import { prisma } from "./common.ts";
+import { prisma } from "./common";
 
 async function main() {
     const password = randomBytes(16).toString('hex')

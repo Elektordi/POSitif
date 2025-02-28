@@ -4,26 +4,34 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "tsc",
-    "start": "tsx src/index.ts",
-    "dev": "tsx watch src/index.ts",
-    "setup": "tsx src/setup.ts"
+    "setup": "tsx src/setup.ts",
+    "start": "NODE_ENV=production tsx src/main.ts",
+    "dev": "nodemon -w src -x tsx src/main.ts",
+    "build": "tsc ; vite build --emptyOutDir",
+    "clean": "rm -rf dist"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
-    "@types/express-session": "^1.18.1",
     "@types/node": "^22.13.1",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "nodemon": "^3.1.9",
     "prisma": "^6.3.1",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vite": "^6.2.0"
   },
   "dependencies": {
-    "@adminjs/express": "^6.1.1",
-    "@adminjs/prisma": "^5.0.3",
     "@prisma/client": "^5.22.0",
+    "@trpc/client": "^10.45.2",
+    "@trpc/server": "^10.45.2",
     "bcryptjs": "^3.0.2",
     "express": "^4.21.2",
-    "express-session": "^1.18.1",
-    "memorystore": "^1.6.7"
+    "react": "^19.0.0",
+    "react-admin": "^5.6.1",
+    "react-dom": "^19.0.0",
+    "vite-express": "^0.20.0",
+    "zod": "^3.24.2"
   }
 }
