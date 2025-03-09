@@ -47,6 +47,7 @@ export interface OrderLine {
 
 export interface Order {
   id?: number;
+  store?: number;
   lines: OrderLine[];
   total: number;
   refund: boolean;
