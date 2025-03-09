@@ -189,7 +189,7 @@
                 </div>
                 <div class="w-1/2 ml-4 text-6xl text-center">
                   <p i18n>Total: {{ order.total }} €</p>
-                  <p i18n>Received: {{ keypad.value }} €</p>
+                  <p i18n>Received: {{ keypad.buffer }} €</p>
                   <p i18n *ngIf="keypad.value >= order.total">Give back: {{ keypad.value - order.total }} €</p>
                   <p i18n *ngIf="keypad.value < order.total">Missing: {{ order.total - keypad.value }} €</p>
                 </div>
