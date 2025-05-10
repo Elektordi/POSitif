@@ -191,7 +191,7 @@ export class AppComponent {
       this.pay_confirm(method);
     }
     if(method == "card") {
-      if(this.order.total >= 5) {
+      if(this.order.total >= 3) {
         window.stripe_payment_callback = (uid, success, data) => {
           this.zone.run(() => {
             if(this.order.uid != uid || !this.modal) return;
@@ -207,7 +207,7 @@ export class AppComponent {
         }
         window.app.startPayment(Math.trunc(this.order.total*100), this.order.uid, "stripe_payment_callback")
       } else {
-        this.pay_error = $localize`Cannot pay by card if total is less than 5€!`;
+        this.pay_error = $localize`Cannot pay by card if total is less than 3€!`;
       }
     }
     if(method == "preorder") {
