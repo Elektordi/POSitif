@@ -40,7 +40,7 @@
     "8461842260159597706": "Show",
     "9186851443461922338": "Missing POSitif config!",
     "4185484774688059714": "Terminal not avaliable!",
-    "147661536927455755": "Cannot pay by card if total is less than 5€!",
+    "1759323301783557993": "Cannot pay by card if total is less than 3€!",
     "5218218962442980106": "Not enough money on preorder for {$PH}€ order. ({$PH_1}€ paid, {$PH_2}€ used, {$PH_3}€ remains)",
     "9021335356282834849": "Preorder not valid for this period!",
     "4367063185585381372": "Preorder not found!",
@@ -57,6 +57,7 @@
     "1818384836456024615": "Ticket #{$PH}",
     "6094106846903876596": "Total: {$PH}€",
     "5457475315636017123": "Refund by {$PH}",
-    "3404923375620665385": "Paid by {$PH}"
+    "3404923375620665385": "Paid by {$PH}",
+    "7929526872345464705": "No printer detected. Ticket output will be in browser console."
   }
 }

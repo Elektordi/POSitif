@@ -19,7 +19,7 @@
     "447824113237945122": " Pré-commande ",
     "1983771804293771620": " Commande gratuite ",
     "2437651960982213406": " Remboursement Espèces ",
-    "7473331467280616618": " Remboursemnt manuel (CB, chèque, etc.) ",
+    "7473331467280616618": " Remboursement manuel (CB, chèque, etc.) ",
     "560135509973047318": " Annulation commande gratuite ",
     "1711596003682068847": "Paiement {$INTERPOLATION}",
     "6537757946860274443": "Total: {$INTERPOLATION} €",
@@ -40,7 +40,7 @@
     "8461842260159597706": "Ouvrir",
     "9186851443461922338": "Configuration POSitif absente!",
     "4185484774688059714": "Terminal CB non disponible !",
-    "147661536927455755": "Paiement CB impossible pour les montants de moins de 5€ !",
+    "1759323301783557993": "Paiement CB impossible pour les montants de moins de 3€ !",
     "5218218962442980106": "Pas assez de fonds sur la précommande pour {$PH}€. ({$PH_1}€ payé, {$PH_2}€ utilisé, {$PH_3}€ restant)",
     "9021335356282834849": "Précommande non valide sur cette période !",
     "4367063185585381372": "Précommande introuvable !",
@@ -57,6 +57,7 @@
     "1818384836456024615": "Ticket n°{$PH}",
     "6094106846903876596": "Total: {$PH}€",
     "5457475315636017123": "Remboursement par {$PH}",
-    "3404923375620665385": "Paiement par {$PH}"
+    "3404923375620665385": "Paiement par {$PH}",
+    "7929526872345464705": "Pas d'imprimante détectée. Voir la console pour le ticket."
   }
 }
