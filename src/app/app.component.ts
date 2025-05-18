@@ -220,7 +220,7 @@ export class AppComponent {
               if(preorder) {
                 if(preorder.used + this.order.total <= preorder.max) {
                   this.order.payment_infos = data;
-                  preorder.used += this.order.total;
+                  preorder.used += this.order.total * (this.order.refund ? -1 : 1);
                   this.pay_confirm("preorder");
                 } else {
                   this.sound.bip_error();

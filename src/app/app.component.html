@@ -148,10 +148,15 @@
           </div>
         </div>
       </div>
-      <div class="mt-10 grid grid-cols-1" *ngIf="order.refund">
+      <div class="mt-10 grid grid-cols-2" *ngIf="order.refund">
         <div class="px-5 mt-5">
           <div class="px-4 py-4 rounded-md shadow-lg text-center bg-purple-500 text-white font-semibold cursor-pointer text-2xl" (click)="pay('cash');" i18n>
             Refund with Cash
+          </div>
+        </div>
+        <div class="px-5 mt-5">
+          <div class="px-4 py-4 rounded-md shadow-lg text-center bg-purple-500 text-white font-semibold cursor-pointer text-2xl" (click)="pay('preorder');" i18n>
+            Refund Pre-ordered
           </div>
         </div>
         <div class="px-5 mt-5">
