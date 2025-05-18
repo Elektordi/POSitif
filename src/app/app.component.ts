@@ -195,7 +195,7 @@ export class AppComponent {
       if(this.order.total >= 3) {
         window.stripe_payment_callback = (uid, success, data) => {
           this.zone.run(() => {
-            if(this.order.uid != uid || !this.modal) return;
+            if(this.order.uid != uid) return;
             if(success) {
               this.order.payment_infos = data;
               this.pay_confirm("card");
