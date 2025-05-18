@@ -149,13 +149,20 @@ export class BackendService {
     if(this.orders_buffer.length == 0) return;
     var data = {data: this.orders_buffer[0]};
     this.http.post<Strapi>(`${this.setup.backend_url}/api/orders`, data, this.httpOptions())
+      .pipe(catchError((err, caught) => {
+        if(err.status == 400 && err.error?.error?.message == "This attribute must be unique" && err.error?.error?.details?.errors[0].path[0] == "uid") {
+          console.log("Duplicate uid detected!");
+          data.data.uid += "~";
+        }
+        return throwError(() => err);
+      }))
       .pipe(catchError(err => this.handleError(err)))
       .subscribe((data) => {
         this.last_call_ok = true;
         this.orders_buffer.shift();
         this.flush_buffers();
-        if(data.data.payment_infos == this.last_order.payment_infos) this.last_order.documentId = data.data.documentId;
-    })
+        if(data.data && data.data.payment_infos == this.last_order.payment_infos) this.last_order.documentId = data.data.documentId;
+      })
   }
   
   update_sync_state() {
