@@ -46,7 +46,7 @@ export class AppComponent {
         this.backend.set_setup({
             backend_url: params.get("backend"),
             backend_key: params.get("key"),
-            store: parseInt(params.get("store")),
+            store: params.get("store"),
             terminal: parseInt(params.get("terminal")),
         });
     }
@@ -115,7 +115,7 @@ export class AppComponent {
   }
 
   add_cart(product: Product) {
-    const l = this.order.lines.find(e => e.product && e.product.id == product.id);
+    const l = this.order.lines.find(e => e.product && e.product.documentId == product.documentId);
     if(l)
       l.qty += 1;
     else

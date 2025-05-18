@@ -42,7 +42,7 @@
       <div class="mt-5 flex flex-row px-5" *ngIf="categories_list && categories_list.length > 1">
         <div *ngFor="let category of categories_list">
           <span   class="px-5 py-1 rounded-2xl font-semibold mr-4 text-2xl"
-                  [ngClass]="{'bg-cyan-500 text-white': category.id == active_category?.id, 'cursor-pointer': category.id != active_category?.id}"
+                  [ngClass]="{'bg-cyan-500 text-white': category.documentId == active_category?.documentId, 'cursor-pointer': category.documentId != active_category?.documentId}"
                   (click)="select_category(category)">
             {{ category.name }}
           </span>

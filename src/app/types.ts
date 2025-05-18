@@ -23,14 +23,14 @@ export interface StripeConfig {
 }
 
 export interface Category {
-  id: number;
+  documentId: string;
   name: string;
   products: Product[];
   display_order: number;
 }
 
 export interface Product {
-  id: number;
+  documentId: string;
   name: string;
   desc: string;
   price: number;
@@ -46,7 +46,7 @@ export interface OrderLine {
 }
 
 export interface Order {
-  id?: number;
+  documentId?: string;
   store?: number;
   lines: OrderLine[];
   total: number;
@@ -65,7 +65,7 @@ export enum SyncStatus {
 }
 
 export interface Preorder {
-  id: number;
+  documentId: string;
   display_name: string;
   uid: string;
   period_start: string;

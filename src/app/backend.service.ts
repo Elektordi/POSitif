@@ -74,7 +74,7 @@ export class BackendService {
   fetch_categories(): Promise<Category[]> {
     return new Promise((resolve, reject) => {
       if(!this.setup.backend_url) return reject("Backend url missing.");
-      this.http.get<Strapi>(`${this.setup.backend_url}/api/categories?filters[store][id][$eq]=${this.setup.store}&populate[]=products&populate[]=products.photo`, this.httpOptions())
+      this.http.get<Strapi>(`${this.setup.backend_url}/api/categories?filters[store][documentId][$eq]=${this.setup.store}&populate[]=products&populate[]=products.photo`, this.httpOptions())
         .pipe(catchError(err => this.handleError(err)))
         .subscribe((data) => { this.last_call_ok = true; this.update_sync_state(); resolve(data.data); })
     });
@@ -83,7 +83,7 @@ export class BackendService {
   fetch_preorders(): Promise<Preorder[]> {
     return new Promise((resolve, reject) => {
       if(!this.setup.backend_url) return reject("Backend url missing.");
-      this.http.get<Strapi>(`${this.setup.backend_url}/api/preorders?filters[store][id][$eq]=${this.setup.store}`, this.httpOptions())
+      this.http.get<Strapi>(`${this.setup.backend_url}/api/preorders?filters[store][documentId][$eq]=${this.setup.store}`, this.httpOptions())
         .pipe(catchError(err => this.handleError(err)))
         .subscribe((data) => { this.last_call_ok = true; this.update_sync_state(); resolve(data.data); })
     });
@@ -93,7 +93,7 @@ export class BackendService {
     return new Promise((resolve, reject) => {
       if(!this.setup.backend_url) return reject("Backend url missing.");
       var data = {data: {used: used}};
-      this.http.put<Strapi>(`${this.setup.backend_url}/api/preorders/${preorder.id}`, data, this.httpOptions())
+      this.http.put<Strapi>(`${this.setup.backend_url}/api/preorders/${preorder.documentId}`, data, this.httpOptions())
         .pipe(catchError(err => this.handleError(err)))
         .subscribe((data) => { this.last_call_ok = true; this.update_sync_state(); resolve(data.data); })
     });
@@ -120,7 +120,7 @@ export class BackendService {
   fetch_orders_history(): Promise<Order[]> {
     return new Promise((resolve, reject) => {
       if(!this.setup.backend_url) return reject("Backend url missing.");
-      this.http.get<Strapi>(`${this.setup.backend_url}/api/orders?filters[store][id][$eq]=${this.setup.store}&populate[]=lines&sort[0]=payment_timestamp:desc`, this.httpOptions())
+      this.http.get<Strapi>(`${this.setup.backend_url}/api/orders?filters[store][documentId][$eq]=${this.setup.store}&populate[]=lines&sort[0]=payment_timestamp:desc`, this.httpOptions())
         .pipe(catchError(err => this.handleError(err)))
         .subscribe((data) => { this.last_call_ok = true; this.update_sync_state(); resolve(data.data); })
     });
@@ -137,7 +137,7 @@ export class BackendService {
   push_order(order: Order) {
     this.last_order = JSON.parse(JSON.stringify(order)); // Deepcopy
     // @ts-ignore: prepare data for backend
-    order.lines.forEach(x => x.product = x.product?.id);
+    order.lines.forEach(x => x.product = x.product?.documentId);
     order.store = this.setup.store;
     this.orders_buffer.push(order);
     this.flush_buffers();
@@ -155,7 +155,7 @@ export class BackendService {
         this.last_call_ok = true;
         this.orders_buffer.shift();
         this.flush_buffers();
-        if(data.data.payment_infos == this.last_order.payment_infos) this.last_order.id = data.data.id;
+        if(data.data.payment_infos == this.last_order.payment_infos) this.last_order.documentId = data.data.documentId;
     })
   }
   
