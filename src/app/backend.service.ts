@@ -88,16 +88,6 @@ export class BackendService {
         .subscribe((data) => { this.last_call_ok = true; this.update_sync_state(); resolve(data.data); })
     });
   }
-  
-  update_preorder_used(preorder: Preorder, used: number): Promise<Preorder> {
-    return new Promise((resolve, reject) => {
-      if(!this.setup.backend_url) return reject("Backend url missing.");
-      var data = {data: {used: used}};
-      this.http.put<Strapi>(`${this.setup.backend_url}/api/preorders/${preorder.documentId}`, data, this.httpOptions())
-        .pipe(catchError(err => this.handleError(err)))
-        .subscribe((data) => { this.last_call_ok = true; this.update_sync_state(); resolve(data.data); })
-    });
-  }
 
   fetch_stripe_config(): Promise<StripeConfig> {
     return new Promise((resolve, reject) => {

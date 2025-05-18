@@ -221,7 +221,6 @@ export class AppComponent {
                   this.order.payment_infos = data;
                   preorder.used += this.order.total;
                   this.pay_confirm("preorder");
-                  this.backend.update_preorder_used(preorder, preorder.used);
                 } else {
                   this.sound.bip_error();
                   this.flash('red');
