@@ -24,7 +24,10 @@ export class TicketService {
 
   init_printer(config: Config) {
     this.config = config;
-    window.app.initPrinter(config.ticket_printer_target);
+    console.log("initPrinter:", JSON.stringify(config.ticket_printer_target));
+    if(window.app) {
+      window.app.initPrinter(config.ticket_printer_target);
+    }
   }
 
   print_order_ticket(order: Order): boolean {
@@ -72,8 +75,14 @@ export class TicketService {
 
     var data = ticket.encode();
 
-    console.log(JSON.stringify(data));
-    window.app.printTicket(data);
+    console.log("printTicket:", data);
+    if(window.app && this.config!.ticket_printer_target) {
+      window.app.printTicket(data);
+    } else {
+      alert($localize`No printer detected. Ticket output will be in browser console.`);
+      var fakedata = new TextDecoder().decode(data);
+      console.log("Decoded data:", fakedata);
+    }
     return true;
   }
 }
