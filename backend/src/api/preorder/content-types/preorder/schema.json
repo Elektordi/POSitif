@@ -16,8 +16,10 @@
       "type": "string"
     },
     "uid": {
-      "type": "uid",
-      "required": true
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "regex": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
     },
     "period_start": {
       "type": "datetime"

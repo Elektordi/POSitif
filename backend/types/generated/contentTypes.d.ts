@@ -507,7 +507,9 @@ export interface ApiPreorderPreorder extends Struct.CollectionTypeSchema {
     period_start: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
     store: Schema.Attribute.Relation<'oneToOne', 'api::store.store'>;
-    uid: Schema.Attribute.UID & Schema.Attribute.Required;
+    uid: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

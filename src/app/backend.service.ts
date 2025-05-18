@@ -116,6 +116,15 @@ export class BackendService {
     });
   }
 
+  fetch_preorder_history(preorder: Preorder): Promise<Order[]> {
+    return new Promise((resolve, reject) => {
+      if(!this.setup.backend_url) return reject("Backend url missing.");
+      this.http.get<Strapi>(`${this.setup.backend_url}/api/orders?filters[payment_method][$eq]=preorder&filters[payment_infos][$eq]=${preorder.uid}&populate[]=lines&sort[0]=payment_timestamp:desc`, this.httpOptions())
+        .pipe(catchError(err => this.handleError(err)))
+        .subscribe((data) => { this.last_call_ok = true; this.update_sync_state(); resolve(data.data); })
+    });
+  }
+
   get_terminal_id(): string {
     return ('000'+(this.setup.terminal || 0).toString()).slice(-3);
   }

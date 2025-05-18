@@ -24,6 +24,7 @@ export class AppComponent {
   order: Order;
   last_order?: Order;
   order_history?: Order[];
+  order_history_preorder?: Preorder;
   pay_error?: string;
   card_ready: boolean = false;
   preorders?: Preorder[];
@@ -306,6 +307,42 @@ export class AppComponent {
 
   load_order_history() {
     this.backend.fetch_orders_history().then(data => this.order_history = data);
+  }
+
+  preorder_history() {
+    window.scan_qrcode_callback = (data) => {
+      this.zone.run(() => {
+        if(data) {
+          const now = new Date().toISOString();
+          const preorder = this.preorders?.find(p => p.uid == data);
+          if(preorder) {
+            this.backend.fetch_preorder_history(preorder).then((history) => {
+              this.order_history = history;
+              this.order_history_preorder = preorder;
+            });
+          } else {
+            this.sound.bip_error();
+            this.flash('red');
+            this.pay_error = $localize`Preorder not found!`;
+            return;
+          }
+        } else {
+          this.modal = undefined;
+        }
+      });
+    }
+    if(window.app) {
+      window.app.scanQrCode("scan_qrcode_callback")
+    } else {
+      window.scan_qrcode_callback(prompt($localize`No integrated scanner, please enter preorder uid:`) || "")
+    }
+  }
+
+  print_preorder() {
+    if(this.ticket.print_preorder_history_ticket(this.order_history_preorder!, this.order_history!)) {
+      this.flash('green');
+      this.sound.bip_success();
+    }
   }
 
 }
