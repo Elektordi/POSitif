@@ -598,6 +598,7 @@ export interface ApiStoreStore extends Struct.CollectionTypeSchema {
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::store.store'> &
       Schema.Attribute.Private;
+    managers: Schema.Attribute.Relation<'oneToMany', 'admin::user'>;
     publishedAt: Schema.Attribute.DateTime;
     ref: Schema.Attribute.UID<'title'> &
       Schema.Attribute.Required &

@@ -55,6 +55,11 @@
     },
     "ticket_printer_target": {
       "type": "string"
+    },
+    "managers": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "admin::user"
     }
   }
 }
