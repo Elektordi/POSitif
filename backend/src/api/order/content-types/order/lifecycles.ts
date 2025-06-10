@@ -21,10 +21,7 @@ export default {
     await handle(event);
   },
   async afterDelete(event) {
-    const { params } = event;
-    if(params.data.payment_method == "preorder") {
-      await strapi.service('api::preorder.preorder').updateUsed(params.data.payment_infos);
-    }
+    await handle(event);
   },
 };
 
