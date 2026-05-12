@@ -99,7 +99,7 @@ export class TicketService {
     ticket.newline();
 
     ticket.size('normal');
-    ticket.line($localize`Preorder account` + ":");
+    ticket.line($localize`Prepaid account` + ":");
     ticket.size('small');
     ticket.line(preorder.display_name);
     ticket.line(`(${preorder.uid})`);

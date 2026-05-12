@@ -139,7 +139,7 @@
         </div>
         <div class="px-5 mt-5">
           <div class="px-4 py-4 rounded-md shadow-lg text-center bg-green-500 text-white font-semibold cursor-pointer text-2xl" (click)="pay('preorder');" i18n>
-            Pre-ordered
+            Pre-paid
           </div>
         </div>
         <div class="px-5 mt-5">
@@ -156,7 +156,7 @@
         </div>
         <div class="px-5 mt-5">
           <div class="px-4 py-4 rounded-md shadow-lg text-center bg-purple-500 text-white font-semibold cursor-pointer text-2xl" (click)="pay('preorder');" i18n>
-            Refund Pre-ordered
+            Refund Pre-paid
           </div>
         </div>
         <div class="px-5 mt-5">
@@ -203,7 +203,7 @@
                 <p i18n>Please proceed to card payment on terminal...</p>
               </div>
               <div class="flex-row text-2xl" *ngIf="modal == 'prepaid' && !pay_error">
-                <p i18n>Please scan preorder QRCode...</p>
+                <p i18n>Please scan prepaid QRCode...</p>
               </div>
               <div class="flex-row text-2xl" *ngIf="modal == 'check' || modal == 'manual'">
                 <p i18n>Please write payment details: (check number, name, etc.)</p>
@@ -267,7 +267,7 @@
           <span class="inline-flex w-auto justify-center rounded-md bg-green-600 px-3 py-2 font-semibold text-white shadow-sm ml-3 cursor-pointer text-2xl" (click)="last_order=undefined;" i18n>Close</span>
           <span class="mt-0 inline-flex w-auto justify-center rounded-md bg-blue-800 px-3 py-2 font-semibold text-white shadow-sm ml-3 cursor-pointer text-2xlr" (click)="print_order(last_order);" i18n>Print ticket</span>
           <span class="mt-0 inline-flex w-auto justify-center rounded-md bg-gray-100 text-gray-800 px-3 py-2 font-semibold shadow-sm ml-3 cursor-pointer text-2xlr" (click)="load_order_history();" i18n>Orders history</span>
-          <span class="mt-0 inline-flex w-auto justify-center rounded-md bg-gray-100 text-gray-800 px-3 py-2 font-semibold shadow-sm ml-3 cursor-pointer text-2xlr" (click)="preorder_history();" i18n>Lookup preorder history</span>
+          <span class="mt-0 inline-flex w-auto justify-center rounded-md bg-gray-100 text-gray-800 px-3 py-2 font-semibold shadow-sm ml-3 cursor-pointer text-2xlr" (click)="preorder_history();" i18n>Lookup prepaid history</span>
         </div>
       </div>
     </div>
@@ -286,7 +286,7 @@
             </button>
             <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title" i18n>Orders history</h3>
             <div class="px-4" *ngIf="order_history_preorder">
-              <b i18n>Preorder account</b>: {{ order_history_preorder.display_name }}<br/>
+              <b i18n>Prepaid account</b>: {{ order_history_preorder.display_name }}<br/>
               <b i18n>Initial credit</b>: {{ order_history_preorder.max }} €<br/>
               <b i18n>Used credit</b>: {{ order_history_preorder.used }} €<br/>
               <b i18n>Balance</b>: {{ order_history_preorder.max - order_history_preorder.used }} €

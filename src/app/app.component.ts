@@ -225,16 +225,16 @@ export class AppComponent {
                 } else {
                   this.sound.bip_error();
                   this.flash('red');
-                  this.pay_error = $localize`Not enough money on preorder for ${this.order.total}€ order. (${preorder.max}€ paid, ${preorder.used}€ used, ${preorder.max-preorder.used}€ remains)`;
+                  this.pay_error = $localize`Not enough money on prepayment for ${this.order.total}€ order. (${preorder.max}€ paid, ${preorder.used}€ used, ${preorder.max-preorder.used}€ remains)`;
                   return;
                 }
               } else {
                 this.sound.bip_error();
                 this.flash('red');
                 if(this.preorders?.find(p => p.uid == data)) {
-                  this.pay_error = $localize`Preorder not valid for this period!`;
+                  this.pay_error = $localize`Prepayment not valid for this period!`;
                 } else {
-                  this.pay_error = $localize`Preorder not found!`;
+                  this.pay_error = $localize`Prepayment not found!`;
                 }
                 return;
               }
@@ -323,7 +323,7 @@ export class AppComponent {
           } else {
             this.sound.bip_error();
             this.flash('red');
-            this.pay_error = $localize`Preorder not found!`;
+            this.pay_error = $localize`Prepayment not found!`;
             return;
           }
         } else {
