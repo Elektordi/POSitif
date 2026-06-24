@@ -4,6 +4,9 @@ services:
   backend:
     build:
       context: backend
+      args:
+        NODE_ENV: development
+        #NODE_ENV: production
     volumes:
       - ./dist/data.db:/srv/app/data.db
     ports:
@@ -12,6 +15,8 @@ services:
   frontend:
     build:
       context: .
+      args:
+        LANG: fr
+        #LANG: en
     ports:
       - 8000:8000
-
